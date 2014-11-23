@@ -225,10 +225,10 @@ class TestAlt(TestBase):
         baz = c.Object('baz')
 
         with c.alt():
-            with c.chioce('ok'):
+            with c.choice('ok'):
                 with foo:
                     bar.func()
-            with c.chioce('else'):
+            with c.choice('else'):
                 with foo:
                     baz.func()
         self.check(c, [
@@ -273,10 +273,10 @@ class TestAlt(TestBase):
         baz = c.Object('baz')
 
         with c.alt():
-            with c.chioce('ok'):
+            with c.choice('ok'):
                 with foo:
                     bar.func()
-            with c.chioce('else'):
+            with c.choice('else'):
                 with foo:
                     baz.func()
 

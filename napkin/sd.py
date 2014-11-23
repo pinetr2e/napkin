@@ -284,7 +284,7 @@ class Context(object):
     def alt(self):
         return Frag(self, 'alt')
 
-    def chioce(self, condition=None):
+    def choice(self, condition=None):
         return Frag(self, 'choice', condition)
 
     def enter_frag(self, frag):
