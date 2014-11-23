@@ -4,7 +4,6 @@ from napkin import plantuml
 class TestBase(object):
     def check(self, sd_func, exp_lines):
         exp_lines = '@startuml' + exp_lines + '@enduml\n'
-
         lines = plantuml.generate_sd(sd_func)
         assert lines == exp_lines
 
@@ -136,8 +135,8 @@ foo -> baz : func()
 activate baz
 deactivate baz
 else b
-foo -> baz : func()
-activate baz
-deactivate baz
+foo -> bar : func()
+activate bar
+deactivate bar
 end
 """)

@@ -19,4 +19,19 @@ def sd_test(c):
                 baz.func()
                 c.ret('a')
 
+        with c.loop():
+            bar.func().ret('value')
+
+        with c.alt():
+            with c.choice('a'):
+                baz.func()
+                with c.alt():
+                    with c.choice('a'):
+                        baz.func()
+                    with c.choice('b'):
+                        bar.func()
+            with c.choice('b'):
+                bar.func()
+
+
 print plantuml.generate_sd(sd_test)

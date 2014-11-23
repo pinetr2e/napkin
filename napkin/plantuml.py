@@ -10,7 +10,6 @@ def generate_sd(sd_func):
     current_call = None
 
     output.append('@startuml')
-    prev_action = None
     for action in sd_context.sequence:
         if isinstance(action, sd_action.Call):
             output.append('%(caller)s -> %(callee)s : '
@@ -33,17 +32,29 @@ def generate_sd(sd_func):
             current_call = call_stack.pop()
 
         elif isinstance(action, sd_action.FragBegin):
-            s = '%s' % (action.op_name)
-            if action.condition:
-                s += ' %s' % action.condition
-            output.append(s)
+            if action.op_name == 'alt':
+                is_alt_waiting_for_first_choice = True
+            else:
+                if action.op_name == 'choice':
+                    if is_alt_waiting_for_first_choice:
+                        is_alt_waiting_for_first_choice = False
+                        s = 'alt'
+                    else:
+                        s = 'else'
+                else:
+                    s = '%s' % (action.op_name)
+
+                if action.condition:
+                    s += ' %s' % action.condition
+                output.append(s)
 
         elif isinstance(action, sd_action.FragEnd):
-            output.append('end')
-
+            if action.op_name == 'choice':
+                pass
+            else:
+                output.append('end')
         else:
             output.append('unknown : %s' % action)
 
-        prev_action = action
     output.append('@enduml\n')
     return "\n".join(output)
