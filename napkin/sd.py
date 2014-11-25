@@ -93,10 +93,11 @@ class Method:
         return self.name
 
 
-class Object:
-    def __init__(self, sd, name):
+class Object(object):
+    def __init__(self, sd, name, cls=None):
         self.sd = sd
         self.name = name
+        self.cls = cls
         self.methods = {}
 
     def __getattr__(self, name):
@@ -111,7 +112,7 @@ class Object:
             return
         self.sd.leave_top_object()
 
-    def __str__(self):
+    def __repr__(self):
         return self.name
 
     def invoke_call(self, call):
@@ -174,10 +175,10 @@ class Context(object):
         #
         self.pending_call = None
 
-    def Object(self, name):
+    def Object(self, name, cls=None):
         """Create an object
         """
-        obj = self.objects.setdefault(name, Object(self, name))
+        obj = self.objects.setdefault(name, Object(self, name, cls=cls))
         return obj
 
     def enter_top_object(self, obj):

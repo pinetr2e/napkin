@@ -3,6 +3,23 @@ import sd_action
 import util
 
 
+def output_class_specified_participants(sequence):
+    # Add participants for the object specified with class name
+    output = []
+    objects_with_class = []
+    calls = [a for a in sequence if isinstance(a, sd_action.Call)]
+
+    def check_and_gen(o):
+        if o.cls and (o not in objects_with_class):
+            objects_with_class.append(o)
+            output.append('participant "%(name)s:%(cls)s" '
+                          'as %(name)s' % o.__dict__)
+    for call in calls:
+        check_and_gen(call.caller)
+        check_and_gen(call.callee)
+    return output
+
+
 def generate_sd(sd_func):
     sd_context = sd.Context()
     sd_func(sd_context)
@@ -11,6 +28,9 @@ def generate_sd(sd_func):
     current_call = None
 
     output.append('@startuml')
+
+    output += output_class_specified_participants(sd_context.sequence)
+
     for p_action, action, n_action in util.neighbour(sd_context.sequence):
         if isinstance(action, sd_action.Call):
             output.append('%(caller)s -> %(callee)s : '

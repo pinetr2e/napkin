@@ -122,3 +122,18 @@ else b
 foo -> bar : func()
 end
 """)
+
+
+class TestObjectWithClass(TestBase):
+    def test_call(self):
+        def f(c):
+            a = c.Object('a', cls='Foo')
+            b = c.Object('b', cls='Foo')
+            with a:
+                b.func()
+
+        self.check(f, """
+participant "a:Foo" as a
+participant "b:Foo" as b
+a -> b : func()
+""")

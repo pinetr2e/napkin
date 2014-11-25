@@ -9,8 +9,8 @@ from napkin import plantuml
 
 
 def sd_test(c):
-    foo = c.Object('foo')
-    bar = c.Object('bar')
+    foo = c.Object('foo', cls='Account')
+    bar = c.Object('bar', cls='Account')
     baz = c.Object('baz')
     with foo:
         with c.opt():
