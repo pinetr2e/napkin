@@ -18,8 +18,6 @@ class TestSimpleCalls(TestBase):
 
         self.check(f, """
 foo -> bar : func()
-activate bar
-deactivate bar
 """)
 
     def test_call_with_params(self):
@@ -31,8 +29,6 @@ deactivate bar
 
         self.check(f, """
 foo -> bar : func(abc)
-activate bar
-deactivate bar
 """)
 
     def test_call_with_return(self):
@@ -60,11 +56,7 @@ deactivate bar
 
         self.check(f, """
 foo -> bar : func()
-activate bar
-deactivate bar
 foo -> baz : func()
-activate baz
-deactivate baz
 """)
 
     def test_call_two_level(self):
@@ -80,8 +72,6 @@ deactivate baz
 foo -> bar : func()
 activate bar
 bar -> baz : func()
-activate baz
-deactivate baz
 deactivate bar
 """)
 
@@ -96,8 +86,6 @@ deactivate bar
         self.check(f, """
 opt
 foo -> baz : func()
-activate baz
-deactivate baz
 end
 """)
 
@@ -112,8 +100,6 @@ end
         self.check(f, """
 opt is_ok
 foo -> baz : func()
-activate baz
-deactivate baz
 end
 """)
 
@@ -132,11 +118,7 @@ end
         self.check(f, """
 alt a
 foo -> baz : func()
-activate baz
-deactivate baz
 else b
 foo -> bar : func()
-activate bar
-deactivate bar
 end
 """)

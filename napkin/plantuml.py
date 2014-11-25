@@ -1,5 +1,6 @@
 import sd
 import sd_action
+import util
 
 
 def generate_sd(sd_func):
@@ -10,16 +11,19 @@ def generate_sd(sd_func):
     current_call = None
 
     output.append('@startuml')
-    for action in sd_context.sequence:
+    for p_action, action, n_action in util.neighbour(sd_context.sequence):
         if isinstance(action, sd_action.Call):
             output.append('%(caller)s -> %(callee)s : '
                           '%(method_name)s(%(params)s)' % action.__dict__)
-            output.append('activate %s' % action.callee)
+
+            if not isinstance(n_action, sd_action.ImplicitReturn):
+                output.append('activate %s' % action.callee)
             call_stack.append(current_call)
             current_call = action
 
         elif isinstance(action, sd_action.ImplicitReturn):
-            output.append('deactivate %s' % current_call.callee)
+            if not isinstance(p_action, sd_action.Call):
+                output.append('deactivate %s' % current_call.callee)
             current_call = call_stack.pop()
 
         elif isinstance(action, sd_action.Return):
