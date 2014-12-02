@@ -12,28 +12,35 @@ def sd_test(c):
     foo = c.object('foo', cls='Account')
     bar = c.object('bar', cls='Account')
     baz = c.object('baz')
+    xxx = c.object('xxx')
     with foo:
         with c.opt():
-            with c.create(baz):
-                with bar.func():
-                    c.ret('a')
-            with c.destroy(baz):
-                with foo.haha():
-                    baz.faaa()
+            bar.func()
+            with bar.func():
+                baz.func()
+                c.ret('a')
+
+        with c.create(xxx):
+            bar.start()
+
+        with c.destroy(xxx):
+            with bar.end():
+                foo.end();
+
 
         with c.loop():
             bar.func().ret('value')
 
-        # with c.alt():
-        #     with c.choice('a'):
-        #         baz.func()
-        #         with c.alt():
-        #             with c.choice('a'):
-        #                 baz.func()
-        #             with c.choice('b'):
-        #                 bar.func()
-        #     with c.choice('b'):
-        #         bar.func()
+        with c.alt():
+            with c.choice('a'):
+                baz.func()
+                with c.alt():
+                    with c.choice('a'):
+                        baz.func()
+                    with c.choice('b'):
+                        bar.func()
+            with c.choice('b'):
+                bar.func()
 
 
 print plantuml.generate_sd(sd_test)
