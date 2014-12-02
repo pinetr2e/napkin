@@ -65,18 +65,6 @@ def generate_sd(sd_func):
             output.append('deactivate %s' % current_call.callee)
             current_call = call_stack.pop()
 
-        elif isinstance(action, sd_action.Create):
-            output.append('create %s' % action.obj)
-            output.append('%(caller)s -> %(obj)s : <<create>>'
-                          % action.__dict__)
-
-        elif isinstance(action, sd_action.Destroy):
-            output.append('%(caller)s -> %(obj)s'
-                          % action.__dict__)
-            output.append('activate %s' % action.obj)
-            output.append('deactivate %s' % action.obj)
-            output.append('destroy %s' % action.obj)
-
         elif isinstance(action, sd_action.FragBegin):
             if action.op_name == 'alt':
                 is_alt_waiting_for_first_choice = True
