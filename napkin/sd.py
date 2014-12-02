@@ -2,6 +2,7 @@
 # Sequence diagram tools
 #
 import sd_action
+import collections
 
 
 class ContextError(Exception):
@@ -21,6 +22,14 @@ class CallError(ContextError):
 
 
 class FragError(ContextError):
+    pass
+
+
+class CreateError(ContextError):
+    pass
+
+
+class DestroyError(ContextError):
     pass
 
 
@@ -80,9 +89,10 @@ class MethodCall:
 
 
 class Method:
-    def __init__(self, obj, name):
+    def __init__(self, obj, name, flags=''):
         self.obj = obj
         self.name = name
+        self.flags = flags
 
     def __call__(self, *args, **kargs):
         call = MethodCall(self.obj, self, args, kargs)
@@ -100,7 +110,15 @@ class Object(object):
         self.cls = cls
         self.methods = {}
 
+        # Becomes false if it is destroyed in the middle of sequence diagram
+        self.valid = True
+        # Becomes true if it is created in the middle of sequence diagram
+        self.created = False
+
     def __getattr__(self, name):
+        return self.create_method(name)
+
+    def create_method(self, name):
         method = self.methods.setdefault(name, Method(self, name))
         return method
 
@@ -147,7 +165,7 @@ class Context(object):
     def __init__(self):
 
         # Objects used in the diagram.
-        self.objects = {}
+        self.objects = collections.OrderedDict()
 
         # Capture the sequence of the actions
         self.sequence = []
@@ -175,7 +193,7 @@ class Context(object):
         #
         self.pending_call = None
 
-    def Object(self, name, cls=None):
+    def object(self, name, cls=None):
         """Create an object
         """
         obj = self.objects.setdefault(name, Object(self, name, cls=cls))
@@ -207,6 +225,10 @@ class Context(object):
             raise CallError('Cannot be invoked inside alt level')
 
         self.return_any_pending_call()
+
+        if not call.obj.valid:
+            raise CallError('Object was destroyed')
+
         self.pending_call = call
 
     def return_any_pending_call(self):
@@ -216,20 +238,30 @@ class Context(object):
             call_action = sd_action.Call(caller,
                                          pending_call.obj,
                                          pending_call.method.name,
-                                         pending_call.params)
+                                         pending_call.params,
+                                         pending_call.method.flags)
             self.sequence.append(call_action)
 
             ret_params = self.pending_call.ret_params
             ret_action = (sd_action.Return(ret_params)
                           if ret_params else
                           sd_action.ImplicitReturn())
-            self.sequence.append(ret_action)
+            self._add_return_action(self.pending_call, ret_action)
             self.pending_call = None
+
+    def _add_return_action(self, call, ret_action):
+        if 'd' in call.method.flags:
+
+            # Make it invalid to use the object after the destructor returns.
+            call.obj.valid = False
+
+        self.sequence.append(ret_action)
 
     def enter_call(self, call):
         caller = self.current_call.obj
         action = sd_action.Call(caller, call.obj,
-                                call.method.name, call.params)
+                                call.method.name, call.params,
+                                call.method.flags)
         self.sequence.append(action)
 
         self.call_stack.append(self.current_call)
@@ -250,7 +282,7 @@ class Context(object):
         ret_action = (sd_action.Return(ret_params)
                       if ret_params else
                       sd_action.ImplicitReturn())
-        self.sequence.append(ret_action)
+        self._add_return_action(self.current_call, ret_action)
 
         self.current_call = self.call_stack.pop()
 
@@ -313,6 +345,61 @@ class Context(object):
 
         self.sequence.append(sd_action.FragEnd(self.current_frag.op_name))
         self.current_frag = self.frag_stack.pop()
+
+    def create(self, obj_or_call):
+        """Create object and invoke the constructor.
+
+        If obj_or_call is Object type, default constructor called, <<create>>
+        is called.
+        """
+
+        if self.current_call is None:
+            raise CreateError('No caller specified')
+
+        if isinstance(obj_or_call, Object):
+            obj = obj_or_call
+            method = obj.create_method('<<create>>')
+            call = method()
+        elif isinstance(obj_or_call, MethodCall):
+            call = obj_or_call
+            obj = call.obj
+            method = call.method
+        else:
+            raise CreateError('Invalid argument')
+
+        if len(obj.methods) > 1:
+            raise CreateError('Object is already being used')
+
+        if obj.created:
+            raise CreateError('Object was already created')
+        else:
+            obj.created = True
+
+        method.flags = 'c'
+        return call
+
+    def destroy(self, obj_or_call):
+        """Invoke the destructor then destroy the object.
+        """
+        if self.current_call is None:
+            raise DestroyError('No caller specified')
+
+        if isinstance(obj_or_call, Object):
+            obj = obj_or_call
+            if not obj.valid:
+                raise DestroyError('Object already destroyed')
+            method = obj.create_method('<<destroy>>')
+            call = method()
+        elif isinstance(obj_or_call, MethodCall):
+            call = obj_or_call
+            obj = call.obj
+            method = call.method
+        else:
+            raise CreateError('Invalid argument')
+
+        # the object will become invalid when it returns from the destructor
+        method.flags = 'd'
+        return call
 
 
 class Diagram:

@@ -30,8 +30,8 @@ class TestTopLevel(TestBase):
     def test_call(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
         with foo:
             bar.func()
 
@@ -43,8 +43,8 @@ class TestTopLevel(TestBase):
     def test_call_twice(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
         with foo:
             bar.func()
             bar.func2()
@@ -59,8 +59,8 @@ class TestTopLevel(TestBase):
     def test_call_with_return(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
         with foo:
             bar.func().ret('val')
 
@@ -72,8 +72,8 @@ class TestTopLevel(TestBase):
     def test_call_with_return_twice(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
         with foo:
             bar.func().ret('val')
             bar.func2().ret('val2')
@@ -88,8 +88,8 @@ class TestTopLevel(TestBase):
     def test_fail_when_separate_return_called(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
         with foo:
             bar.func()
             with pytest.raises(sd.CallError):
@@ -98,8 +98,8 @@ class TestTopLevel(TestBase):
     def test_fail_when_top_level_caller_set_twice(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
         with foo:
             bar.func()
             with pytest.raises(sd.TopLevelCallerError):
@@ -109,7 +109,7 @@ class TestTopLevel(TestBase):
     def test_noop_when_do_nothing_in_top_level_caller(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
+        foo = c.object('foo')
         with foo:
             pass
 
@@ -117,13 +117,13 @@ class TestTopLevel(TestBase):
         ])
 
 
-class TestInsideFirstFunc(TestBase):
+class TestSecondLevel(TestBase):
     def test_call(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
-        baz = c.Object('baz')
+        foo = c.object('foo')
+        bar = c.object('bar')
+        baz = c.object('baz')
         with foo:
             with bar.func():
                 baz.func2()
@@ -138,9 +138,9 @@ class TestInsideFirstFunc(TestBase):
     def test_call_twice(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
-        baz = c.Object('baz')
+        foo = c.object('foo')
+        bar = c.object('bar')
+        baz = c.object('baz')
         with foo:
             with bar.func():
                 baz.func2()
@@ -158,9 +158,9 @@ class TestInsideFirstFunc(TestBase):
     def test_call_with_return(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
-        baz = c.Object('baz')
+        foo = c.object('foo')
+        bar = c.object('bar')
+        baz = c.object('baz')
         with foo:
             with bar.func():
                 baz.func2().ret()
@@ -175,9 +175,9 @@ class TestInsideFirstFunc(TestBase):
     def test_return_from_outside_func(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
-        baz = c.Object('baz')
+        foo = c.object('foo')
+        bar = c.object('bar')
+        baz = c.object('baz')
         with foo:
             with bar.func():
                 baz.func2()
@@ -193,9 +193,9 @@ class TestInsideFirstFunc(TestBase):
     def test_fail_when_call_after_returning_from_outside_func(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
-        baz = c.Object('baz')
+        foo = c.object('foo')
+        bar = c.object('bar')
+        baz = c.object('baz')
         with foo:
             with bar.func():
                 baz.func2()
@@ -206,9 +206,9 @@ class TestInsideFirstFunc(TestBase):
     def test_fail_when_return_again_from_outside_func(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
-        baz = c.Object('baz')
+        foo = c.object('foo')
+        bar = c.object('bar')
+        baz = c.object('baz')
         with foo:
             with bar.func():
                 baz.func2()
@@ -219,8 +219,8 @@ class TestInsideFirstFunc(TestBase):
     def test_return_from_outside_func_without_calling_any(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
         with foo:
             with bar.func():
                 c.ret()
@@ -233,8 +233,8 @@ class TestInsideFirstFunc(TestBase):
     def test_do_nothing_in_outside_func(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
         with foo:
             with bar.func():
                 pass
@@ -243,3 +243,144 @@ class TestInsideFirstFunc(TestBase):
             sd_action.Call(foo, bar, 'func'),
             sd_action.ImplicitReturn(),
         ])
+
+
+class TestCreate(TestBase):
+    def test_simple(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        with foo:
+            c.create(bar)
+
+        self.check(c, [
+            sd_action.Call(foo, bar, '<<create>>', flags='c'),
+            sd_action.ImplicitReturn(),
+        ])
+
+    def test_non_default_method(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        with foo:
+            c.create(bar.new())
+
+        self.check(c, [
+            sd_action.Call(foo, bar, 'new', flags='c'),
+            sd_action.ImplicitReturn(),
+        ])
+
+    def test_constructor_params(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        with foo:
+            c.create(bar.new('a', name='bar'))
+
+        self.check(c, [
+            sd_action.Call(foo, bar, 'new',
+                           params=sd.Params(('a',), dict(name='bar')),
+                           flags='c'),
+            sd_action.ImplicitReturn(),
+        ])
+
+    def test_call_others_in_constructor(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        baz = c.object('baz')
+        with foo:
+            with c.create(bar):
+                baz.func()
+
+        self.check(c, [
+            sd_action.Call(foo, bar, '<<create>>', flags='c'),
+            sd_action.Call(bar, baz, 'func'),
+            sd_action.ImplicitReturn(),
+            sd_action.ImplicitReturn(),
+        ])
+
+    def test_fail_if_called_at_top_level(self):
+        c = sd.Context()
+
+        with pytest.raises(sd.CreateError):
+            bar = c.object('bar')
+            c.create(bar)
+
+    def test_fail_if_create_object_already_being_used(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        with foo:
+            bar.func()
+            with pytest.raises(sd.CreateError):
+                c.create(bar)
+
+    def test_fail_if_create_object_twice(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        with foo:
+            c.create(bar)
+            with pytest.raises(sd.CreateError):
+                c.create(bar)
+
+
+class TestDestroy(TestBase):
+    def test_simple(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        with foo:
+            bar.func()
+            c.destroy(bar)
+
+        self.check(c, [
+            sd_action.Call(foo, bar, 'func'),
+            sd_action.ImplicitReturn(),
+            sd_action.Call(foo, bar, '<<destroy>>', flags='d'),
+            sd_action.ImplicitReturn(),
+        ])
+
+    def test_fail_when_call_destroyed_object(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        with foo:
+            c.destroy(bar)
+            with pytest.raises(sd.CallError):
+                bar.func()
+
+    def test_call_other_methods_of_the_same_object_from_destructr(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        with foo:
+            with c.destroy(bar):
+                bar.func()
+
+    def test_fail_when_destroy_twice_the_same_object(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        with foo:
+            c.destroy(bar)
+            with pytest.raises(sd.CallError):
+                c.destroy(bar)
+
+    def test_fail_if_called_at_top_level(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        with pytest.raises(sd.DestroyError):
+            c.destroy(foo)

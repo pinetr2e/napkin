@@ -7,23 +7,27 @@ class _Action(object):
 
 
 class Call(_Action):
-    def __init__(self, caller, callee, method_name, params=None):
+
+    def __init__(self, caller, callee, method_name, params=None, flags=''):
         self.caller = caller
         self.callee = callee
         self.method_name = method_name
         self.params = sd.Params() if params is None else params
+        self.flags = flags
 
     def __repr__(self):
-        return "call from %s to %s::%s(%s)" % (self.caller,
-                                               self.callee,
-                                               self.method_name,
-                                               self.params)
+        return "call from %s to %s::%s(%s) [%s]" % (self.caller,
+                                                    self.callee,
+                                                    self.method_name,
+                                                    self.params,
+                                                    self.flags)
 
     def __eq__(self, other):
         return (self.caller is other.caller and
                 self.caller is other.caller and
                 self.method_name == other.method_name and
-                self.params == other.params)
+                self.params == other.params and
+                self.flags == other.flags)
 
 
 class Return(_Action):

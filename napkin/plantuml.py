@@ -2,21 +2,19 @@ import sd
 import sd_action
 import util
 
+import re
 
-def output_class_specified_participants(sequence):
-    # Add participants for the object specified with class name
+
+def output_participants(sd_context):
+    # Add participants in the order of usage
     output = []
-    objects_with_class = []
-    calls = [a for a in sequence if isinstance(a, sd_action.Call)]
-
-    def check_and_gen(o):
-        if o.cls and (o not in objects_with_class):
-            objects_with_class.append(o)
+    for o in sd_context.objects.values():
+        if o.cls:
             output.append('participant "%(name)s:%(cls)s" '
                           'as %(name)s' % o.__dict__)
-    for call in calls:
-        check_and_gen(call.caller)
-        check_and_gen(call.callee)
+        else:
+            output.append('participant %(name)s' % o.__dict__)
+    output.append('')
     return output
 
 
@@ -29,12 +27,20 @@ def generate_sd(sd_func):
 
     output.append('@startuml')
 
-    output += output_class_specified_participants(sd_context.sequence)
+    output += output_participants(sd_context)
 
     for p_action, action, n_action in util.neighbour(sd_context.sequence):
         if isinstance(action, sd_action.Call):
-            output.append('%(caller)s -> %(callee)s : '
-                          '%(method_name)s(%(params)s)' % action.__dict__)
+            if 'c' in action.flags:
+                output.append('create %(callee)s' % action.__dict__)
+
+            if re.match('<<\w+>>', action.method_name):
+                # such as <<create>> or <<destroy>>
+                output.append('%(caller)s -> %(callee)s : '
+                              '%(method_name)s' % action.__dict__)
+            else:
+                output.append('%(caller)s -> %(callee)s : '
+                              '%(method_name)s(%(params)s)' % action.__dict__)
 
             if not isinstance(n_action, sd_action.ImplicitReturn):
                 output.append('activate %s' % action.callee)
@@ -44,6 +50,10 @@ def generate_sd(sd_func):
         elif isinstance(action, sd_action.ImplicitReturn):
             if not isinstance(p_action, sd_action.Call):
                 output.append('deactivate %s' % current_call.callee)
+
+            if 'd' in current_call.flags:
+                output.append('destroy %s' % current_call.callee)
+
             current_call = call_stack.pop()
 
         elif isinstance(action, sd_action.Return):
@@ -54,6 +64,18 @@ def generate_sd(sd_func):
             output.append(s)
             output.append('deactivate %s' % current_call.callee)
             current_call = call_stack.pop()
+
+        elif isinstance(action, sd_action.Create):
+            output.append('create %s' % action.obj)
+            output.append('%(caller)s -> %(obj)s : <<create>>'
+                          % action.__dict__)
+
+        elif isinstance(action, sd_action.Destroy):
+            output.append('%(caller)s -> %(obj)s'
+                          % action.__dict__)
+            output.append('activate %s' % action.obj)
+            output.append('deactivate %s' % action.obj)
+            output.append('destroy %s' % action.obj)
 
         elif isinstance(action, sd_action.FragBegin):
             if action.op_name == 'alt':
@@ -77,6 +99,7 @@ def generate_sd(sd_func):
                 pass
             else:
                 output.append('end')
+
         else:
             output.append('unknown : %s' % action)
 

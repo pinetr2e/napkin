@@ -17,8 +17,8 @@ class TestOpt(TestBase):
     def test_top_level(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
 
         with c.opt():
             with foo:
@@ -34,8 +34,8 @@ class TestOpt(TestBase):
     def test_top_level_twice(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
 
         with c.opt():
             with foo:
@@ -59,8 +59,8 @@ class TestOpt(TestBase):
     def test_inside_top_level(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
 
         with foo:
             with c.opt():
@@ -76,8 +76,8 @@ class TestOpt(TestBase):
     def test_inside_top_level_twice(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
 
         with foo:
             with c.opt():
@@ -99,9 +99,9 @@ class TestOpt(TestBase):
     def test_inside_func_call(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
-        baz = c.Object('baz')
+        foo = c.object('foo')
+        bar = c.object('bar')
+        baz = c.object('baz')
 
         with foo:
             with bar.func():
@@ -120,9 +120,9 @@ class TestOpt(TestBase):
     def test_inside_func_call_twice(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
-        baz = c.Object('baz')
+        foo = c.object('foo')
+        bar = c.object('bar')
+        baz = c.object('baz')
 
         with foo:
             with bar.func():
@@ -147,8 +147,8 @@ class TestOpt(TestBase):
     def test_with_condition(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
 
         with c.opt('condition'):
             with foo:
@@ -164,8 +164,8 @@ class TestOpt(TestBase):
     def test_fail_after_return_from_func(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
 
         with foo:
             with bar.func():
@@ -177,8 +177,8 @@ class TestOpt(TestBase):
     def test_fail_if_empty_inside(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
 
         with foo:
             with bar.func():
@@ -189,7 +189,7 @@ class TestOpt(TestBase):
     def test_exception_inside(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
+        foo = c.object('foo')
 
         with pytest.raises(ZeroDivisionError):
             with foo:
@@ -201,8 +201,8 @@ class TestLoop(TestBase):
     def test_top_level(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
 
         with c.loop():
             with foo:
@@ -220,9 +220,9 @@ class TestAlt(TestBase):
     def test_top_level_two_choices(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
-        baz = c.Object('baz')
+        foo = c.object('foo')
+        bar = c.object('bar')
+        baz = c.object('baz')
 
         with c.alt():
             with c.choice('ok'):
@@ -247,8 +247,8 @@ class TestAlt(TestBase):
     def test_fail_if_call_in_alt(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
         with pytest.raises(sd.CallError):
             with c.alt():
                 with foo:
@@ -257,8 +257,8 @@ class TestAlt(TestBase):
     def test_fail_if_other_frag_in_alt(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
+        foo = c.object('foo')
+        bar = c.object('bar')
         with pytest.raises(sd.FragError):
             with c.alt():
                     with c.opt():  # wrong frag
@@ -268,9 +268,9 @@ class TestAlt(TestBase):
     def test_inside_top_level_two_sections(self):
         c = sd.Context()
 
-        foo = c.Object('foo')
-        bar = c.Object('bar')
-        baz = c.Object('baz')
+        foo = c.object('foo')
+        bar = c.object('bar')
+        baz = c.object('baz')
 
         with c.alt():
             with c.choice('ok'):

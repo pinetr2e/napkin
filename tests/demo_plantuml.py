@@ -9,29 +9,31 @@ from napkin import plantuml
 
 
 def sd_test(c):
-    foo = c.Object('foo', cls='Account')
-    bar = c.Object('bar', cls='Account')
-    baz = c.Object('baz')
+    foo = c.object('foo', cls='Account')
+    bar = c.object('bar', cls='Account')
+    baz = c.object('baz')
     with foo:
         with c.opt():
-            bar.func()
-            with bar.func():
-                baz.func()
-                c.ret('a')
+            with c.create(baz):
+                with bar.func():
+                    c.ret('a')
+            with c.destroy(baz):
+                with foo.haha():
+                    baz.faaa()
 
         with c.loop():
             bar.func().ret('value')
 
-        with c.alt():
-            with c.choice('a'):
-                baz.func()
-                with c.alt():
-                    with c.choice('a'):
-                        baz.func()
-                    with c.choice('b'):
-                        bar.func()
-            with c.choice('b'):
-                bar.func()
+        # with c.alt():
+        #     with c.choice('a'):
+        #         baz.func()
+        #         with c.alt():
+        #             with c.choice('a'):
+        #                 baz.func()
+        #             with c.choice('b'):
+        #                 bar.func()
+        #     with c.choice('b'):
+        #         bar.func()
 
 
 print plantuml.generate_sd(sd_test)
