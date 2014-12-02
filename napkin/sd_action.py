@@ -78,3 +78,16 @@ class FragEnd(_Action):
     def __eq__(self, other):
         return (self.__class__ is other.__class__ and
                 self.__dict__ == other.__dict__)
+
+
+class Note(_Action):
+    def __init__(self, text, obj=None):
+        self.text = text
+        self.obj = obj
+
+    def __repr__(self):
+        return "note over %s : %s" % (self.obj, self.text)
+
+    def __eq__(self, other):
+        return (self.__class__ is other.__class__ and
+                self.__dict__ == other.__dict__)

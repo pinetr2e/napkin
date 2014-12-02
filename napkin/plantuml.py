@@ -88,6 +88,14 @@ def generate_sd(sd_func):
             else:
                 output.append('end')
 
+        elif isinstance(action, sd_action.Note):
+            lines = action.text.splitlines()
+            if len(lines) == 1:
+                output.append('note over %(obj)s : %(text)s' % action.__dict__)
+            else:
+                output.append('note over %(obj)s' % action.__dict__)
+                output += lines
+                output.append('end note')
         else:
             output.append('unknown : %s' % action)
 

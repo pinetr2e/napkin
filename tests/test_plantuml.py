@@ -243,3 +243,40 @@ bar -> foo : end()
 deactivate bar
 destroy bar
 """)
+
+
+class TestNote(TestBase):
+    def test_over_object(self):
+        def f(c):
+            foo = c.object('foo')
+            bar = c.object('bar')
+            with foo:
+                c.note('blah')
+                bar.func()
+
+        self.check(f, """
+participant foo
+participant bar
+
+note over foo : blah
+foo -> bar : func()
+""")
+
+    def test_multiple_line_text(self):
+        def f(c):
+            foo = c.object('foo')
+            bar = c.object('bar')
+            with foo:
+                c.note('blah\nblah')
+                bar.func()
+
+        self.check(f, """
+participant foo
+participant bar
+
+note over foo
+blah
+blah
+end note
+foo -> bar : func()
+""")

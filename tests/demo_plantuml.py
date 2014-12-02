@@ -13,20 +13,27 @@ def sd_test(c):
     bar = c.object('bar', cls='Account')
     baz = c.object('baz')
     xxx = c.object('xxx')
+
+    foo.note('note over object')
+    bar.note('note over object2')
+
     with foo:
         with c.opt():
             bar.func()
             with bar.func():
+                c.note('context specific note\n'
+                       'example')
                 baz.func()
                 c.ret('a')
 
         with c.create(xxx):
+            c.note('context specific note\n'
+                   'example2')
             bar.start()
 
         with c.destroy(xxx):
             with bar.end():
-                foo.end();
-
+                foo.end()
 
         with c.loop():
             bar.func().ret('value')

@@ -145,6 +145,9 @@ class Object(object):
     def exit_call(self):
         self.sd.exit_call()
 
+    def note(self, text):
+        self.sd.note_over(self, text)
+
 
 class Frag:
     def __init__(self, sd, op_name, condition=None):
@@ -400,6 +403,17 @@ class Context(object):
         # the object will become invalid when it returns from the destructor
         method.flags = 'd'
         return call
+
+    def note(self, text):
+        """Add note over current object.
+        """
+        if self.current_call is None:
+            raise DestroyError('No object specified')
+        self.current_call.obj.note(text)
+
+    def note_over(self, obj, text):
+        self.return_any_pending_call()
+        self.sequence.append(sd_action.Note(text, obj=obj))
 
 
 class Diagram:

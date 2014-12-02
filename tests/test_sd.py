@@ -384,3 +384,37 @@ class TestDestroy(TestBase):
         foo = c.object('foo')
         with pytest.raises(sd.DestroyError):
             c.destroy(foo)
+
+
+class TestNote(TestBase):
+    def test_over_object_implicit(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        with foo:
+            c.note('blah')
+            bar.func()
+
+        self.check(c, [
+            sd_action.Note('blah', obj=foo),
+            sd_action.Call(foo, bar, 'func'),
+            sd_action.ImplicitReturn(),
+        ])
+
+    def test_over_object_explicit(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        with foo:
+            foo.note('blah')
+            bar.note('blah2')
+            bar.func()
+
+        self.check(c, [
+            sd_action.Note('blah', obj=foo),
+            sd_action.Note('blah2', obj=bar),
+            sd_action.Call(foo, bar, 'func'),
+            sd_action.ImplicitReturn(),
+        ])
