@@ -7,7 +7,7 @@ sys.path.append(napkin_path)
 
 from napkin import plantuml
 
-
+@napkin.sd
 def sd_test(c):
     foo = c.object('foo', cls='Account')
     bar = c.object('bar', cls='Account')
@@ -50,4 +50,4 @@ def sd_test(c):
                 bar.func()
 
 
-print plantuml.generate_sd(sd_test)
+print plantuml.generate_sd(sd_test2)
