@@ -100,8 +100,12 @@ def generate_sd(sd_func):
                 output.append('note over %(obj)s' % action.__dict__)
                 output += lines
                 output.append('end note')
-        else:
-            output.append('unknown : %s' % action)
+
+        elif isinstance(action, sd_action.Delay):
+            if action.text:
+                output.append('... {} ...'.format(action.text))
+            else:
+                output.append('...')
 
     output.append('@enduml\n')
     return "\n".join(output)

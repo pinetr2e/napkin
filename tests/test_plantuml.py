@@ -280,3 +280,37 @@ blah
 end note
 foo -> bar : func()
 """)
+
+
+class TestDelay(TestBase):
+    def test_without_text(self):
+        def f(c):
+            foo = c.object('foo')
+            bar = c.object('bar')
+            with foo:
+                bar.func()
+            c.delay()
+
+        self.check(f, """
+participant foo
+participant bar
+
+foo -> bar : func()
+...
+""")
+
+    def test_with_text(self):
+        def f(c):
+            foo = c.object('foo')
+            bar = c.object('bar')
+            with foo:
+                bar.func()
+            c.delay('hello')
+
+        self.check(f, """
+participant foo
+participant bar
+
+foo -> bar : func()
+... hello ...
+""")

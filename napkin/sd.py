@@ -417,6 +417,9 @@ class Context(object):
         self.return_any_pending_call()
         self.sequence.append(sd_action.Note(text, obj=obj))
 
+    def delay(self, text=None):
+        self.sequence.append(sd_action.Delay(text))
+
 
 class Diagram:
     def __init__(self, dfunc):
