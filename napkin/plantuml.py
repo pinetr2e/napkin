@@ -14,6 +14,10 @@ def output_participants(sd_context):
                           'as %(name)s' % o.__dict__)
         else:
             output.append('participant %(name)s' % o.__dict__)
+
+        if o.stereotype:
+            output[-1] += ' <<{}>>'.format(o.stereotype)
+
     output.append('')
     return output
 
