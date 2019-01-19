@@ -418,6 +418,7 @@ class Context(object):
         self.sequence.append(sd_action.Note(text, obj=obj))
 
     def delay(self, text=None):
+        self.return_any_pending_call()
         self.sequence.append(sd_action.Delay(text))
 
 
