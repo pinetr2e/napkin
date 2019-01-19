@@ -104,11 +104,12 @@ class Method:
 
 
 class Object(object):
-    def __init__(self, sd, name, cls=None):
+    def __init__(self, sd, name, cls=None, stereotype=None):
         self.sd = sd
         self.name = name
         self.cls = cls
         self.methods = {}
+        self.stereotype = stereotype
 
         # Becomes false if it is destroyed in the middle of sequence diagram
         self.valid = True
@@ -196,10 +197,11 @@ class Context(object):
         #
         self.pending_call = None
 
-    def object(self, name, cls=None):
+    def object(self, name, cls=None, stereotype=None):
         """Create an object
         """
-        obj = self.objects.setdefault(name, Object(self, name, cls=cls))
+        obj = self.objects.setdefault(name, Object(self, name, cls=cls,
+                                                   stereotype=stereotype))
         return obj
 
     def enter_top_object(self, obj):
@@ -414,6 +416,9 @@ class Context(object):
     def note_over(self, obj, text):
         self.return_any_pending_call()
         self.sequence.append(sd_action.Note(text, obj=obj))
+
+    def delay(self, text=None):
+        self.sequence.append(sd_action.Delay(text))
 
 
 class Diagram:
