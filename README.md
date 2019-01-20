@@ -11,11 +11,11 @@ However, the syntax of PlantUML is hard to use when there are nested calls,
 where lifeline with multiple activation/deactivations are involved.
 Unfortunately, this situation is quite common in sequence diagram for S/W.
 
-For example, consider the following relative simple and common sequence
-diagrams is from Figure 4.2, UML Distilled 3E: 
+For example, consider the following common sequence diagram,
+which is from [Figure 4.2, UML Distilled 3E](https://my.safaribooksonline.com/book/software-engineering-and-development/uml/0321193687/sequence-diagrams/ch04):
 ![Figure 4.2, UML Distilled 3E](images/distributed_control.png)
 
-PlainUML script for the diagram will be as follows:
+The PlainUML script for the diagram will be as follows:
 ```plantuml
 @startuml
 participant User
@@ -41,7 +41,7 @@ deactivate OrderLine
 deactivate Order
 @enduml
 ```
-It is quite hard to follow especially there are multiple level of nested actviation/deactivation.
+It is quite hard to follow especially as there are multiple level of nested actviation/deactivation.
 
 What if we express the same thing as the following Python code ?
 ```python
@@ -61,17 +61,18 @@ def distributed_control(c):
                     order.GetBaseValue().ret('value')
                     c.ret('discountedValue')
 ```
-distributed_control() is normal python function accepting an context object to access APIs.
-The function defines objects and the control starts with 'user' object, which then calls orderLine.calculatePrice().
+`distributed_control` is normal function accepting a context object, `c` to access APIs.
+The function defines objects and the control starts with `user` object, which then calls `orderLine.calculatePrice()`.
 Basically, the sequence diagram is expressed as "almost" normal python code.
 
 There are several advantages of using Python as DSL:
-* Easy to write correct diagrams
+* Easy to write/maintain scripts for the correct diagrams
 * Many common mistakes are detected as normal Python error. For example, method
-  call to an undefined object will be just normal Python error.
+  call to an undefined object will be just normal Python error.(This can be even
+  checked by IDE without running scripts).
 * Any Python editor can become sequence diagram editor
 * There can be many interesting usages by taking advantage of Python as general
-  language. For example, we can use build a library for patterns.
+  language. For example, we can build a library for patterns.
 
 
 ## Installation
