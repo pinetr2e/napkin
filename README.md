@@ -3,7 +3,7 @@
 Python as DSL for writing sequence diagram.
 
 The sequence diagrams are useful tool to capture the S/W design and
-[PlantUML]_www.plantuml.com_ is a great tool to write nice sequence diagrams in
+[PlantUML](www.plantuml.com) is a great tool to write nice sequence diagrams in
 plain text.
 
 However, the syntax of PlantUML is quite error prone especially when there are
@@ -50,7 +50,7 @@ There are several advantages of using Python as DSL:
 * Any Python editor can become sequence diagram editor
 
 
-## How to install
+## Installation
 
 Install and update using `pip`
 ```
@@ -73,7 +73,7 @@ def hello_world(c):
 ```
 Then, the following command will generate hello_world.uml:
 ```
-$ napkin hello_world.py
+$ napkin hello.py
 ```
 
 ## More examples
