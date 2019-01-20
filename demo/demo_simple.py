@@ -13,5 +13,6 @@ def sd_simple(c):
                 with bar.CreateRequest():
                     c.ret('Done')
 
+
 if __name__ == '__main__':
     napkin.generate()

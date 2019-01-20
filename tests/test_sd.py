@@ -280,7 +280,8 @@ class TestCreate(TestBase):
             c.create(bar.new('a', name='bar'))
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'new', params=sd.Params(('a',), dict(name='bar')),
+            sd_action.Call(foo, bar, 'new',
+                           params=sd.Params(('a',), dict(name='bar')),
                            flags='c'),
             sd_action.ImplicitReturn(),
         ])

@@ -3,9 +3,9 @@ PlanUML format sequence diagram generation
 """
 
 import re
-from . import sd
 from . import sd_action
 from . import util
+
 
 def _output_participants(sd_context):
     """
@@ -14,13 +14,12 @@ def _output_participants(sd_context):
     output = []
     for o in sd_context._objects.values():
         stereotype = ' <<{}>>'.format(o.stereotype) if o.stereotype else ''
-        if o.cls:
-            l = 'participant "{name:s}:{cls:s}" as {name:s}{stereotype}'.format(
+        output.append(
+            'participant "{name:s}:{cls:s}" as {name:s}{stereotype}'.format(
                 name=o.name, cls=o.cls, stereotype=stereotype)
-        else:
-            l = 'participant {name:s}{stereotype}'.format(
-                name=o.name, cls=o.cls, stereotype=stereotype)
-        output.append(l)
+            if o.cls else
+            'participant {name:s}{stereotype}'.format(
+                name=o.name, cls=o.cls, stereotype=stereotype))
     output.append('')
     return output
 

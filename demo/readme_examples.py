@@ -5,7 +5,7 @@ import napkin
 
 
 @napkin.seq_diagram('nested calls')
-def ex(c):
+def ex_nc(c):
     foo = c.object('foo')
     bar = c.object('bar')
     baz = c.object('baz')
@@ -16,7 +16,7 @@ def ex(c):
 
 
 @napkin.seq_diagram('calls with return value')
-def ex(c):
+def ex_cwr(c):
     foo = c.object('foo')
     bar = c.object('bar')
 
@@ -30,7 +30,7 @@ def ex(c):
 
 
 @napkin.seq_diagram('pass other object to call')
-def ex(c):
+def ex_poc(c):
     foo = c.object('foo')
     bar = c.object('bar')
     baz = c.object('baz')
@@ -40,7 +40,7 @@ def ex(c):
 
 
 @napkin.seq_diagram('loop')
-def ex(c):
+def ex_loop(c):
     foo = c.object('foo')
     bar = c.object('bar')
 
@@ -52,7 +52,7 @@ def ex(c):
 
 
 @napkin.seq_diagram('alt')
-def ex(c):
+def ex_alt(c):
     foo = c.object('foo')
     bar = c.object('bar')
     baz = c.object('baz')
@@ -67,7 +67,7 @@ def ex(c):
 
 
 @napkin.seq_diagram('create and destroy object')
-def ex(c):
+def ex_cd(c):
     foo = c.object('foo')
     bar = c.object('bar')
     with foo:

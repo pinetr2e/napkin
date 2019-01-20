@@ -2,6 +2,7 @@
 Actions to be captured as sequence.
 """
 
+
 class _Action(object):
     def __eq__(self, other):
         return self.__dict__ == other.__dict__

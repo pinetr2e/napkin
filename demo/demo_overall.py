@@ -1,5 +1,6 @@
 import napkin
 
+
 @napkin.seq_diagram(name='sd_overall')
 def overall(c):
     foo = c.object('foo', cls='Account')

@@ -1,5 +1,6 @@
 import itertools
 
+
 def neighbour(seq):
     """
     Generate sequence of adjacent items.
