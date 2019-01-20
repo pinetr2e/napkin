@@ -42,3 +42,8 @@ def overall(c):
                         bar.func()
             with c.choice('b'):
                 bar.func()
+
+
+# Another way to generate diagrams
+if __name__ == '__main__':
+    napkin.generate()

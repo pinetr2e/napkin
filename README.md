@@ -1,47 +1,70 @@
 # Napkin 
 
-Python as DSL for writing sequence diagram.
+Python as DSL for drawing sequence diagram.
 
-The sequence diagrams are useful tool to capture the S/W design and
-[PlantUML](http://plantuml.com) is a great tool to write nice sequence diagrams
-in plain text.
+## Motivation
+The sequence diagrams are useful tool to capture the behavioural aspect of the
+design. [PlantUML](http://plantuml.com) is a great tool to draw nice sequence
+diagrams with simple human readable plain text.
 
-However, the syntax of PlantUML is quite error prone especially when there are
-nested calls involved.
+However, the syntax of PlantUML is hard to use when there are nested calls,
+where lifeline with multiple activation/deactivations are involved.
+Unfortunately, this situation is quite common in sequence diagram for S/W.
 
-For example:
-```
+For example, consider the following relative simple and common sequence
+diagrams: 
+![Figure 4.2, UML Distilled 3E](images/distributed_control.png)
+
+PlainUML script for the diagram will be as follows:
+```plantuml
+@startuml
 participant User
+participant Order
+participant OrderLine
+participant Product
+participant Customer
 
-User -> Foo: DoWork()
-activate Foo 
-
-Foo -> Foo: InternalCall()
-activate Foo
-
-Foo -> Bar: CreateRequest()
-activate Bar
-
-Bar --> Foo: Request
-deactivate Bar
-deactivate Foo
-deactivate Foo
+User -> Order : calculatePrice()
+activate Order
+Order -> OrderLine : calculatePrice()
+activate OrderLine
+OrderLine -> Product : getPrice(quantity:number)
+OrderLine -> Customer : getDiscountedValue(Order)
+activate Customer
+Customer -> Order : GetBaseValue()
+activate Order
+Customer <-- Order: value
+deactivate Order
+OrderLine <-- Customer: discountedValue
+deactivate Customer
+deactivate OrderLine
+deactivate Order
+@enduml
 ```
-By using normal Python code, it can be naturally expressed with 'with' statement as below:
+It is quite hard to follow as there are multiple level of nested activation.
+
+What if we express the same thing as following Python code ?
+
 ```python
 @napkin.seq_diagram()
-def sd_simple(c):
+def distributed_control(c):
     user = c.object('User')
-    foo = c.object('Foo')
-    bar = c.object('Bar')
+    order = c.object('Order')
+    orderLine = c.object('OrderLine')
+    product = c.object('Product')
+    customer = c.object('Customer')
 
     with user:
-        with foo.DoWork():
-            with foo.InternalCall():
-                with bar.CreateRequest():
-                    c.ret('Done')
+        with order.calculatePrice():
+            with orderLine.calculatePrice():
+                product.getPrice(quantity='number')
+                with customer.getDiscountedValue(order):
+                    order.GetBaseValue().ret('value')
+                    c.ret('discountedValue')
 ```
-Basically, sequence diagram is expressed as methods calls between objects.
+It defines objects and control starts with 'user' object, which calls orderLine.calculatePrice().
+Basically, the sequence diagram is expressed as "almost" normal python code.
+
 
 There are several advantages of using Python as DSL:
 * Easy to write correct diagrams
