@@ -2,7 +2,7 @@ import os
 import importlib
 from . import sd
 
-__version__ = '0.5.0'
+__version__ = '0.5.1'
 
 # Note that the name should match to the module name.
 SUPPORTED_FORMATS = ('plantuml', )
