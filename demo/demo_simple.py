@@ -14,5 +14,12 @@ def sd_simple(c):
                     c.ret('Done')
 
 
+@napkin.seq_diagram()
+def hello_world(c):
+    user = c.object('user')
+    world = c.object('world')
+    with user:
+        world.hello()
+
 if __name__ == '__main__':
     napkin.generate()
