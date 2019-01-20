@@ -31,12 +31,14 @@ foo -> bar : func()
             bar = c.object('bar')
             with foo:
                 bar.func('abc')
+                bar.func2(key='value')
 
         self.check(f, """
 participant foo
 participant bar
 
 foo -> bar : func(abc)
+foo -> bar : func2(key:value)
 """)
 
     def test_call_with_return(self):
