@@ -1,10 +1,10 @@
 # Napkin 
 
-Python as DSL for writing Plantuml sequence diagram.
+Python as DSL for writing sequence diagram.
 
 The sequence diagrams are useful tool to capture the S/W design and
-[[www.plantuml.com][PlantUML]] is a great tool to write nice sequence diagrams
-using plain text.
+[PlantUML][www.plantuml.com] is a great tool to write nice sequence diagrams in
+plain text.
 
 However, the syntax of PlantUML is quite error prone especially when there are
 nested calls involved.
@@ -29,8 +29,8 @@ deactivate Foo
 ```
 By using normal Python code, it can be naturally expressed with 'with' statement as below:
 ```python
-@napkin.seq_diagram
-def sd_test(c):   # 'c' is API to access Napkin
+@napkin.seq_diagram()
+def sd_simple(c):
     user = c.object('User')
     foo = c.object('Foo')
     bar = c.object('Bar')
@@ -39,74 +39,42 @@ def sd_test(c):   # 'c' is API to access Napkin
         with foo.DoWork():
             with foo.InternalCall():
                 with bar.CreateRequest():
-                c.ret('Done')
+                    c.ret('Done')
 ```
-It basically, defines objects and write a code expressing the same thing.
+Basically, sequence diagram is expressed as methods calls between objects.
 
 There are several advantages of using Python as DSL:
-* Easy to write correct diagrams with nested calls and .
+* Easy to write correct diagrams
 * Many common mistakes are detected as normal Python error. For example, method
-  call to an undefined object will be just normal Python error. 
-* Any Python editor can be used as it is simply normal Python code.
+  call to an undefined object will be just normal Python error.
+* Any Python editor can become sequence diagram editor
 
 
-## Examples
+## How to install
 
-Calls With return value:
-```python
-    foo = c.object('foo')
-    bar = c.object('bar')
-
-    with foo:
-        bar.func().ret('something')
+Install and update using `pip`
+```
+    pip install -U napkin
 ```
 
-Pass other object:
-```python
-    foo = c.object('foo')
-    bar = c.object('bar')
-    baz = c.object('baz')
+## Hello world
 
-    with foo:
-        bar.DoSomething(baz, "other value")
+Write a simple script called hello.py as follows:
+
+```
+import napkin
+
+@napkin.seq_diagram
+def hello_world(c):
+    user = c.object('user')
+    world = c.object('world')
+    with user:
+        world.hello()
+```
+Then, the following command will generate hello_world.uml:
+```
+# napkin hello_world.py
 ```
 
-Loop:
-```python
-    foo = c.object('foo')
-    bar = c.object('bar')
-
-    with c.loop():
-        with foo:
-            bar.func()
-```
-Alt:
-```python
-    foo = c.object('foo')
-    bar = c.object('bar')
-    baz = c.object('baz')
-
-    with c.alt():
-        with c.choice('ok'):
-            with foo:
-                bar.func()
-        with c.choice('else'):
-            with foo:
-                baz.func()
-```
-Create objects:
-```python
-    foo = c.object('foo')
-    bar = c.object('bar')
-    with foo:
-        c.create(bar)
-```
-
-Destroy objects:
-```python
-    foo = c.object('foo')
-    bar = c.object('bar')
-    with foo:
-        bar.func()
-        c.destroy(bar)
-```
+## More examples
+[See example](./demo/readme_examples.py)

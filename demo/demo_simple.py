@@ -1,5 +1,6 @@
 import napkin
 
+
 @napkin.seq_diagram()
 def sd_simple(c):
     user = c.object('User')

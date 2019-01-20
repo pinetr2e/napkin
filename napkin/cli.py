@@ -1,10 +1,10 @@
 """
 Command line interface to generate sequence diagrams.
 """
-import sys
 import os
 import argparse
-from . import generate, SUPPORTED_FORMATS, DEFAULT_FORAMT
+import re
+from . import generate, SUPPORTED_FORMATS, DEFAULT_FORAMT, __version__
 
 
 def _parse_args():
@@ -15,8 +15,10 @@ def _parse_args():
     parser.add_argument(
         '--output-dir', '-o', default='.')
     parser.add_argument(
-        'dirs', nargs='+',
-        help='Directory to find Python files containing diagrams')
+        'srcs', nargs='+',
+        help='Directory or file to find Python files containing diagrams')
+    parser.add_argument(
+        '--version', action='version', version=__version__)
     return parser.parse_args()
 
 
@@ -28,17 +30,20 @@ def _import_script(fname):
             exec(compile(file_contents, fname, 'exec'), globals(), locals())
 
 
-def _collect_py_files(py_dirs):
+def _collect_py_files(srcs):
     collected = []
-    for d in py_dirs:
-        for root, dirs, files in os.walk(d):
-            collected += [os.path.join(root, f)
-                          for f in files if f.endswith('.py')]
+    for src in srcs:
+        if os.path.isdir(src):
+            for root, dirs, files in os.walk(src):
+                collected += [os.path.join(root, f)
+                              for f in files if re.match(r'\w*\.py$', f)]
+        else:
+            collected.append(src)
     return collected
 
 
 def main():
     args = _parse_args()
-    for fname in _collect_py_files(args.dirs):
+    for fname in _collect_py_files(args.srcs):
         _import_script(fname)
     generate(args.output_format, args.output_dir)
