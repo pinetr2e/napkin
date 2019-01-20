@@ -1,6 +1,7 @@
 # Napkin 
 
-Python as DSL for drawing sequence diagram.
+Napkin is a tool to "write" sequence diagrams effectively as Python code.
+
 
 ## Motivation
 The sequence diagrams are useful tool to capture the behavioural aspect of the
@@ -65,7 +66,8 @@ def distributed_control(c):
 The function defines objects and the control starts with `user` object, which then calls `orderLine.calculatePrice()`.
 Basically, the sequence diagram is expressed as "almost" normal python code.
 
-There are several advantages of using Python as DSL:
+There are several advantages in using Python instead of using other special
+syntax language:
 * Easy to write/maintain scripts for the correct diagrams
 * Many common mistakes are detected as normal Python error. For example, method
   call to an undefined object will be just normal Python error.(This can be even
@@ -84,7 +86,7 @@ pip install -U napkin
 
 ## Hello world
 
-Write a simple script called hello.py as follows:
+Write a simple script called `hello.py` as follows:
 
 ```python
 import napkin
@@ -96,7 +98,7 @@ def hello_world(c):
     with user:
         world.hello()
 ```
-Then, the following command will generate hello_world.uml:
+Then, the following command will generate `hello_world.uml`:
 ```
 $ napkin hello.py
 ```
