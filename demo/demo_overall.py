@@ -1,7 +1,7 @@
 import napkin
 
-@napkin.seq_diagram()
-def sd_test(c):
+@napkin.seq_diagram(name='sd_overall')
+def overall(c):
     foo = c.object('foo', cls='Account')
     bar = c.object('bar', cls='Account')
     baz = c.object('baz')
