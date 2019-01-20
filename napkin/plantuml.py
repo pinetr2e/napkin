@@ -1,44 +1,47 @@
-import sd
-import sd_action
-import util
+"""
+PlanUML format sequence diagram generation
+"""
 
 import re
+from . import sd
+from . import sd_action
+from . import util
 
-
-def output_participants(sd_context):
-    # Add participants in the order of usage
+def _output_participants(sd_context):
+    """
+    Generate a string containing participants in order of the occurrence.
+    """
     output = []
-    for o in sd_context.objects.values():
+    for o in sd_context._objects.values():
+        stereotype = ' <<{}>>'.format(o.stereotype) if o.stereotype else ''
         if o.cls:
-            output.append('participant "%(name)s:%(cls)s" '
-                          'as %(name)s' % o.__dict__)
+            l = 'participant "{name:s}:{cls:s}" as {name:s}{stereotype}'.format(
+                name=o.name, cls=o.cls, stereotype=stereotype)
         else:
-            output.append('participant %(name)s' % o.__dict__)
-
-        if o.stereotype:
-            output[-1] += ' <<{}>>'.format(o.stereotype)
-
+            l = 'participant {name:s}{stereotype}'.format(
+                name=o.name, cls=o.cls, stereotype=stereotype)
+        output.append(l)
     output.append('')
     return output
 
 
-def generate_sd(sd_func):
-    sd_context = sd.Context()
-    sd_func(sd_context)
-    output = []
+def generate(sd_context):
+    """
+    Generate a string containing PlanUML.
+    """
     call_stack = []
     current_call = None
 
+    output = []
     output.append('@startuml')
+    output += _output_participants(sd_context)
 
-    output += output_participants(sd_context)
-
-    for p_action, action, n_action in util.neighbour(sd_context.sequence):
+    for p_action, action, n_action in util.neighbour(sd_context._sequence):
         if isinstance(action, sd_action.Call):
             if 'c' in action.flags:
                 output.append('create %(callee)s' % action.__dict__)
 
-            if re.match('<<\w+>>', action.method_name):
+            if re.match(r'<<\w+>>', action.method_name):
                 # such as <<create>> or <<destroy>>
                 output.append('%(caller)s -> %(callee)s : '
                               '%(method_name)s' % action.__dict__)
@@ -108,4 +111,4 @@ def generate_sd(sd_func):
                 output.append('...')
 
     output.append('@enduml\n')
-    return "\n".join(output)
+    return '\n'.join(output)

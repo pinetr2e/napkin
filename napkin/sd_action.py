@@ -1,5 +1,6 @@
-import sd
-
+"""
+Actions to be captured as sequence.
+"""
 
 class _Action(object):
     def __eq__(self, other):
@@ -7,16 +8,15 @@ class _Action(object):
 
 
 class Call(_Action):
-
-    def __init__(self, caller, callee, method_name, params=None, flags=''):
+    def __init__(self, caller, callee, method_name, params, flags=''):
         self.caller = caller
         self.callee = callee
         self.method_name = method_name
-        self.params = sd.Params() if params is None else params
+        self.params = params
         self.flags = flags
 
     def __repr__(self):
-        return "call from %s to %s::%s(%s) [%s]" % (self.caller,
+        return 'call from %s to %s::%s(%s) [%s]' % (self.caller,
                                                     self.callee,
                                                     self.method_name,
                                                     self.params,
@@ -31,11 +31,11 @@ class Call(_Action):
 
 
 class Return(_Action):
-    def __init__(self, params=None):
-        self.params = sd.Params() if params is None else params
+    def __init__(self, params):
+        self.params = params
 
     def __repr__(self):
-        return "return (%s)" % (self.params)
+        return 'return (%s)' % (self.params)
 
     def __eq__(self, other):
         return self.params == other.params
@@ -49,7 +49,7 @@ class ImplicitReturn(_Action):
         return self.__class__ is other.__class__
 
     def __repr__(self):
-        return "implicit return"
+        return 'implicit return'
 
 
 class FragBegin(_Action):
@@ -58,9 +58,9 @@ class FragBegin(_Action):
         self.condition = condition
 
     def __repr__(self):
-        s = "%s begin" % self.op_name
+        s = '%s begin' % self.op_name
         if self.condition:
-            s += " [%s]" % self.condition
+            s += ' [%s]' % self.condition
         return s
 
     def __eq__(self, other):
@@ -73,7 +73,7 @@ class FragEnd(_Action):
         self.op_name = op_name
 
     def __repr__(self):
-        return "%s end" % self.op_name
+        return '%s end' % self.op_name
 
     def __eq__(self, other):
         return (self.__class__ is other.__class__ and
@@ -86,7 +86,7 @@ class Note(_Action):
         self.obj = obj
 
     def __repr__(self):
-        return "note over %s : %s" % (self.obj, self.text)
+        return 'note over %s : %s' % (self.obj, self.text)
 
     def __eq__(self, other):
         return (self.__class__ is other.__class__ and
@@ -98,7 +98,7 @@ class Delay(_Action):
         self.text = text
 
     def __repr__(self):
-        return "delay" + ("({})".foramt(self.text) if self.text else "")
+        return 'delay' + ('({})'.foramt(self.text) if self.text else '')
 
     def __eq__(self, other):
         return (self.__class__ is other.__class__ and

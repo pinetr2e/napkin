@@ -1,4 +1,6 @@
-@napkin.seq_diagram
+import napkin
+
+@napkin.seq_diagram()
 def sd_test(c):
     foo = c.object('foo', cls='Account')
     bar = c.object('bar', cls='Account')

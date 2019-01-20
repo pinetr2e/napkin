@@ -10,7 +10,7 @@ class TestDecorator(object):
             bar = c.object('bar')
             with foo:
                 bar.func()
-        napkin.generate_collected_datagrams()
+        napkin.generate()
 
         # Check diagram generate with fname
         assert os.stat(fname + '.uml')

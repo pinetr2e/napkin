@@ -1,10 +1,12 @@
 from napkin import plantuml
+from napkin import sd
 
 
 class TestBase(object):
     def check(self, sd_func, exp_lines):
         exp_lines = '@startuml' + exp_lines + '@enduml\n'
-        lines = plantuml.generate_sd(sd_func)
+        sd_context = sd.parse(sd_func)
+        lines = plantuml.generate(sd_context)
         assert lines == exp_lines
 
 
@@ -151,17 +153,17 @@ end
 """)
 
 
-class TestObjectWithClass(TestBase):
+class TestObjectWithClassAndStereotype(TestBase):
     def test_call(self):
         def f(c):
             a = c.object('a', cls='Foo')
-            b = c.object('b', cls='Foo')
+            b = c.object('b', cls='Foo', stereotype='foo')
             with a:
                 b.func()
 
         self.check(f, """
 participant "a:Foo" as a
-participant "b:Foo" as b
+participant "b:Foo" as b <<foo>>
 
 a -> b : func()
 """)

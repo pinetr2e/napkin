@@ -2,7 +2,6 @@ import pytest
 
 from napkin import sd
 from napkin import sd_action
-from napkin.sd import Params
 
 
 class TestParams:
@@ -19,7 +18,7 @@ class TestParams:
 
 class TestBase(object):
     def check(self, context, exp_actions):
-        actions = context.sequence
+        actions = context._sequence
 
         # This is for better debugging
         assert str(actions) == str(exp_actions)
@@ -36,7 +35,7 @@ class TestTopLevel(TestBase):
             bar.func()
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
         ])
 
@@ -50,9 +49,9 @@ class TestTopLevel(TestBase):
             bar.func2()
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
-            sd_action.Call(foo, bar, 'func2'),
+            sd_action.Call(foo, bar, 'func2', sd.Params()),
             sd_action.ImplicitReturn(),
         ])
 
@@ -65,8 +64,8 @@ class TestTopLevel(TestBase):
             bar.func().ret('val')
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
-            sd_action.Return(Params(('val',))),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
+            sd_action.Return(sd.Params(('val',))),
         ])
 
     def test_call_with_return_twice(self):
@@ -79,10 +78,10 @@ class TestTopLevel(TestBase):
             bar.func2().ret('val2')
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
-            sd_action.Return(Params(('val',))),
-            sd_action.Call(foo, bar, 'func2'),
-            sd_action.Return(Params(('val2',))),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
+            sd_action.Return(sd.Params(('val',))),
+            sd_action.Call(foo, bar, 'func2', sd.Params()),
+            sd_action.Return(sd.Params(('val2',))),
         ])
 
     def test_fail_when_separate_return_called(self):
@@ -129,8 +128,8 @@ class TestSecondLevel(TestBase):
                 baz.func2()
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
-            sd_action.Call(bar, baz, 'func2'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
+            sd_action.Call(bar, baz, 'func2', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.ImplicitReturn(),
         ])
@@ -147,10 +146,10 @@ class TestSecondLevel(TestBase):
                 baz.func3()
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
-            sd_action.Call(bar, baz, 'func2'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
+            sd_action.Call(bar, baz, 'func2', sd.Params()),
             sd_action.ImplicitReturn(),
-            sd_action.Call(bar, baz, 'func3'),
+            sd_action.Call(bar, baz, 'func3', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.ImplicitReturn(),
         ])
@@ -166,9 +165,9 @@ class TestSecondLevel(TestBase):
                 baz.func2().ret()
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
-            sd_action.Call(bar, baz, 'func2'),
-            sd_action.Return(),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
+            sd_action.Call(bar, baz, 'func2', sd.Params()),
+            sd_action.Return(sd.Params()),
             sd_action.ImplicitReturn(),
         ])
 
@@ -184,10 +183,10 @@ class TestSecondLevel(TestBase):
                 c.ret()
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
-            sd_action.Call(bar, baz, 'func2'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
+            sd_action.Call(bar, baz, 'func2', sd.Params()),
             sd_action.ImplicitReturn(),
-            sd_action.Return(),
+            sd_action.Return(sd.Params()),
         ])
 
     def test_fail_when_call_after_returning_from_outside_func(self):
@@ -226,8 +225,8 @@ class TestSecondLevel(TestBase):
                 c.ret()
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
-            sd_action.Return(),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
+            sd_action.Return(sd.Params()),
         ])
 
     def test_do_nothing_in_outside_func(self):
@@ -240,7 +239,7 @@ class TestSecondLevel(TestBase):
                 pass
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
         ])
 
@@ -255,7 +254,7 @@ class TestCreate(TestBase):
             c.create(bar)
 
         self.check(c, [
-            sd_action.Call(foo, bar, '<<create>>', flags='c'),
+            sd_action.Call(foo, bar, '<<create>>', sd.Params(), flags='c'),
             sd_action.ImplicitReturn(),
         ])
 
@@ -268,7 +267,7 @@ class TestCreate(TestBase):
             c.create(bar.new())
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'new', flags='c'),
+            sd_action.Call(foo, bar, 'new', sd.Params(), flags='c'),
             sd_action.ImplicitReturn(),
         ])
 
@@ -281,8 +280,7 @@ class TestCreate(TestBase):
             c.create(bar.new('a', name='bar'))
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'new',
-                           params=sd.Params(('a',), dict(name='bar')),
+            sd_action.Call(foo, bar, 'new', params=sd.Params(('a',), dict(name='bar')),
                            flags='c'),
             sd_action.ImplicitReturn(),
         ])
@@ -298,8 +296,8 @@ class TestCreate(TestBase):
                 baz.func()
 
         self.check(c, [
-            sd_action.Call(foo, bar, '<<create>>', flags='c'),
-            sd_action.Call(bar, baz, 'func'),
+            sd_action.Call(foo, bar, '<<create>>', sd.Params(), flags='c'),
+            sd_action.Call(bar, baz, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.ImplicitReturn(),
         ])
@@ -343,9 +341,9 @@ class TestDestroy(TestBase):
             c.destroy(bar)
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
-            sd_action.Call(foo, bar, '<<destroy>>', flags='d'),
+            sd_action.Call(foo, bar, '<<destroy>>', sd.Params(), flags='d'),
             sd_action.ImplicitReturn(),
         ])
 
@@ -398,7 +396,7 @@ class TestNote(TestBase):
 
         self.check(c, [
             sd_action.Note('blah', obj=foo),
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
         ])
 
@@ -415,6 +413,6 @@ class TestNote(TestBase):
         self.check(c, [
             sd_action.Note('blah', obj=foo),
             sd_action.Note('blah2', obj=bar),
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
         ])

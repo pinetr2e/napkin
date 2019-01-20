@@ -6,7 +6,7 @@ from napkin import sd_action
 
 class TestBase(object):
     def check(self, context, exp_actions):
-        actions = context.sequence
+        actions = context._sequence
 
         # This is for better debugging
         assert str(actions) == str(exp_actions)
@@ -26,7 +26,7 @@ class TestOpt(TestBase):
 
         self.check(c, [
             sd_action.FragBegin('opt'),
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('opt'),
         ])
@@ -47,11 +47,11 @@ class TestOpt(TestBase):
 
         self.check(c, [
             sd_action.FragBegin('opt'),
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('opt'),
             sd_action.FragBegin('opt'),
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('opt'),
         ])
@@ -68,7 +68,7 @@ class TestOpt(TestBase):
 
         self.check(c, [
             sd_action.FragBegin('opt'),
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('opt'),
         ])
@@ -87,11 +87,11 @@ class TestOpt(TestBase):
 
         self.check(c, [
             sd_action.FragBegin('opt'),
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('opt'),
             sd_action.FragBegin('opt'),
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('opt'),
         ])
@@ -109,9 +109,9 @@ class TestOpt(TestBase):
                     baz.func()
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.FragBegin('opt'),
-            sd_action.Call(bar, baz, 'func'),
+            sd_action.Call(bar, baz, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('opt'),
             sd_action.ImplicitReturn(),
@@ -132,13 +132,13 @@ class TestOpt(TestBase):
                     baz.func()
 
         self.check(c, [
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.FragBegin('opt'),
-            sd_action.Call(bar, baz, 'func'),
+            sd_action.Call(bar, baz, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('opt'),
             sd_action.FragBegin('opt'),
-            sd_action.Call(bar, baz, 'func'),
+            sd_action.Call(bar, baz, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('opt'),
             sd_action.ImplicitReturn(),
@@ -156,7 +156,7 @@ class TestOpt(TestBase):
 
         self.check(c, [
             sd_action.FragBegin('opt', 'condition'),
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('opt'),
         ])
@@ -210,7 +210,7 @@ class TestLoop(TestBase):
 
         self.check(c, [
             sd_action.FragBegin('loop'),
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('loop'),
         ])
@@ -234,11 +234,11 @@ class TestAlt(TestBase):
         self.check(c, [
             sd_action.FragBegin('alt'),
             sd_action.FragBegin('choice', 'ok'),
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('choice'),
             sd_action.FragBegin('choice', 'else'),
-            sd_action.Call(foo, baz, 'func'),
+            sd_action.Call(foo, baz, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('choice'),
             sd_action.FragEnd('alt'),
@@ -283,11 +283,11 @@ class TestAlt(TestBase):
         self.check(c, [
             sd_action.FragBegin('alt'),
             sd_action.FragBegin('choice', 'ok'),
-            sd_action.Call(foo, bar, 'func'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('choice'),
             sd_action.FragBegin('choice', 'else'),
-            sd_action.Call(foo, baz, 'func'),
+            sd_action.Call(foo, baz, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
             sd_action.FragEnd('choice'),
             sd_action.FragEnd('alt'),
