@@ -12,7 +12,7 @@ where lifeline with multiple activation/deactivations are involved.
 Unfortunately, this situation is quite common in sequence diagram for S/W.
 
 For example, consider the following relative simple and common sequence
-diagrams: 
+diagrams is from Figure 4.2, UML Distilled 3E: 
 ![Figure 4.2, UML Distilled 3E](images/distributed_control.png)
 
 PlainUML script for the diagram will be as follows:
@@ -41,10 +41,9 @@ deactivate OrderLine
 deactivate Order
 @enduml
 ```
-It is quite hard to follow as there are multiple level of nested activation.
+It is quite hard to follow especially there are multiple level of nested actviation/deactivation.
 
-What if we express the same thing as following Python code ?
-
+What if we express the same thing as the following Python code ?
 ```python
 @napkin.seq_diagram()
 def distributed_control(c):
@@ -62,15 +61,17 @@ def distributed_control(c):
                     order.GetBaseValue().ret('value')
                     c.ret('discountedValue')
 ```
-It defines objects and control starts with 'user' object, which calls orderLine.calculatePrice().
+distributed_control() is normal python function accepting an context object to access APIs.
+The function defines objects and the control starts with 'user' object, which then calls orderLine.calculatePrice().
 Basically, the sequence diagram is expressed as "almost" normal python code.
-
 
 There are several advantages of using Python as DSL:
 * Easy to write correct diagrams
 * Many common mistakes are detected as normal Python error. For example, method
   call to an undefined object will be just normal Python error.
 * Any Python editor can become sequence diagram editor
+* There can be many interesting usages by taking advantage of Python as general
+  language. For example, we can use build a library for patterns.
 
 
 ## Installation

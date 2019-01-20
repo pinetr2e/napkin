@@ -17,5 +17,5 @@ def distributed_control(c):
             with orderLine.calculatePrice():
                 product.getPrice(quantity='number')
                 with customer.getDiscountedValue(order):
-                    order.GetBaseValue().ret('value')
+                    order.getBaseValue().ret('value')
                     c.ret('discountedValue')
