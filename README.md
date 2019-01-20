@@ -64,7 +64,7 @@ Write a simple script called hello.py as follows:
 ```python
 import napkin
 
-@napkin.seq_diagram
+@napkin.seq_diagram()
 def hello_world(c):
     user = c.object('user')
     world = c.object('world')
