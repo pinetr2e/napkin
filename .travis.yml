@@ -5,9 +5,14 @@ python:
   - "3.5"
   - "3.6"
   # - "3.7" , TODO: Trevis does not support yet.
+
+install:
+    - pip install flake8
+
 script:
     - pip install -e .
     - python setup.py test
+    - flake8
 branches:
   only:
    - master
