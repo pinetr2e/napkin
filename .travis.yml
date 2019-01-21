@@ -6,7 +6,7 @@ python:
   - "3.6"
   # - "3.7" , TODO: Trevis does not support yet.
 script:
-    - pip install -e
+    - pip install -e .
     - python setup.py test
 branches:
   only:
