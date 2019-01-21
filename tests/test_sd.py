@@ -12,8 +12,8 @@ class TestParams:
         assert "abc, def" == str(sd.Params(('abc', 'def'), dict()))
 
     def test_args_kargs(self):
-        assert "abc, foo=1, bar=2" == str(sd.Params(('abc',),
-                                                    dict(foo=1, bar=2)))
+        assert "abc, foo=1" == str(sd.Params(('abc',),
+                                             dict(foo=1)))
 
 
 class TestBase(object):
