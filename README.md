@@ -46,6 +46,7 @@ It is quite hard to follow especially as there are multiple level of nested actv
 
 What if we express the same thing as the following Python code ?
 ```python
+
 @napkin.seq_diagram()
 def distributed_control(c):
     user = c.object('User')
@@ -57,9 +58,9 @@ def distributed_control(c):
     with user:
         with order.calculatePrice():
             with orderLine.calculatePrice():
-                product.getPrice(quantity='number')
+                product.getPrice('quantity:number')
                 with customer.getDiscountedValue(order):
-                    order.GetBaseValue().ret('value')
+                    order.getBaseValue().ret('value')
                     c.ret('discountedValue')
 ```
 `distributed_control` is normal function accepting a context object, `c` to access APIs.
