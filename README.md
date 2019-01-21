@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/pinetr2e/napkin.svg?branch=master)](https://travis-ci.org/pinetr2e/napkin)
 # Napkin 
 
 Napkin is a tool to "write" sequence diagrams effectively as Python code.
