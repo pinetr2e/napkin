@@ -49,7 +49,7 @@ class Params:
             if self.kargs:
                 s += ', '
         if self.kargs is not None:
-            s += ', '.join(['%s:%s' % (k, v) for k, v in self.kargs.items()])
+            s += ', '.join(['%s=%s' % (k, v) for k, v in self.kargs.items()])
         return s
 
 

@@ -32,7 +32,7 @@ activate OrderLine
 OrderLine -> Product : getPrice(quantity:number)
 OrderLine -> Customer : getDiscountedValue(Order)
 activate Customer
-Customer -> Order : GetBaseValue()
+Customer -> Order : getBaseValue()
 activate Order
 Customer <-- Order: value
 deactivate Order

@@ -38,7 +38,7 @@ participant foo
 participant bar
 
 foo -> bar : func(abc)
-foo -> bar : func2(key:value)
+foo -> bar : func2(key=value)
 """)
 
     def test_call_with_return(self):
