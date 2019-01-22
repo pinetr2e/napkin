@@ -3,13 +3,12 @@ from napkin import gen_plantuml
 from napkin import sd
 
 
-@pytest.fixture(scope="session")
-def check(tmpdir_factory):
+@pytest.fixture
+def check(tmpdir):
     def fn(sd_func, exp_lines):
-        output_dir = tmpdir_factory.mktemp('data')
         exp_lines = '@startuml' + exp_lines + '@enduml\n'
         sd_context = sd.parse(sd_func)
-        puml_file = gen_plantuml.generate(output_dir, 'test', sd_context)[0]
+        puml_file = gen_plantuml.generate(tmpdir, 'test', sd_context)[0]
         with open(puml_file, 'rt') as f:
             lines = f.read()
         assert lines == exp_lines
