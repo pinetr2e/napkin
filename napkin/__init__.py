@@ -4,18 +4,22 @@ from . import sd
 
 __version__ = '0.5.2'
 
-# Note that the name should match to the module name.
-SUPPORTED_FORMATS = ('plantuml', )
-DEFAULT_FORAMT = SUPPORTED_FORMATS[0]
+# Name and description.
+# Note that the name should match to the module name, gen_<name>.
+SUPPORTED_FORMATS = {
+    'plantuml': 'PlantUML script',
+    'plantuml_png': 'PlantUML script and PNG image'
+}
+DEFAULT_FORAMT = 'plantuml'
 
 _collected_seq_diagrams = []
 
 
 class seq_diagram:
     """
-    Decorator to mark the sequence diagram function.
+    Decorator to mark the sequence  function.
 
-    'diagram_name' is the file name for the generated diagram. The name of
+    'diagram_name' is the file name for the generated . The name of
     decorated function will be used if not specified.
 
     ex:
@@ -44,11 +48,10 @@ def generate(output_format=DEFAULT_FORAMT, output_dir='.'):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    gen_module = importlib.import_module('.' + output_format, 'napkin')
-    for diagram in _collected_seq_diagrams:
-        fname = diagram.name + '.uml'
-        output_path = os.path.join(output_dir, fname)
-        context = sd.parse(diagram.sd_func)
-        with open(output_path, 'w') as f:
-            print('Generate sequence diagram : {}'.format(output_path))
-            f.write(gen_module.generate(context))
+    module_name = '.gen_' + output_format
+    gen_module = importlib.import_module(module_name, 'napkin')
+
+    for d in _collected_seq_diagrams:
+        context = sd.parse(d.sd_func)
+        generated_files = gen_module.generate(d.name, output_dir, context)
+        print('File generated : {}'.format(', '.join(generated_files)))

@@ -6,17 +6,27 @@ import argparse
 import re
 from . import generate, SUPPORTED_FORMATS, DEFAULT_FORAMT, __version__
 
+_DESCRIPTION = 'Generate UML sequence diagram from Python code'
+_EPILOG = """
+Supported output formats:
+""" + '\n'.join('  {:16} : {}'.format(k, v)
+                for k, v in SUPPORTED_FORMATS.items())
+
 
 def _parse_args():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=_DESCRIPTION,
+        epilog=_EPILOG)
+
     parser.add_argument(
         '--output-format', '-f',
-        default=DEFAULT_FORAMT, choices=SUPPORTED_FORMATS),
+        default=DEFAULT_FORAMT, choices=SUPPORTED_FORMATS.keys()),
     parser.add_argument(
         '--output-dir', '-o', default='.')
     parser.add_argument(
         'srcs', nargs='+',
-        help='Directory or file to find Python files containing diagrams')
+        help='Python file or directory containing diagram functions')
     parser.add_argument(
         '--version', action='version', version=__version__)
     return parser.parse_args()

@@ -3,6 +3,7 @@ PlanUML format sequence diagram generation
 """
 
 import re
+import os
 from . import sd_action
 from . import util
 
@@ -24,9 +25,9 @@ def _output_participants(sd_context):
     return output
 
 
-def generate(sd_context):
+def _generate_script(sd_context):
     """
-    Generate a string containing PlanUML.
+    Generate a string containing PlanUML script.
     """
     call_stack = []
     current_call = None
@@ -111,3 +112,11 @@ def generate(sd_context):
 
     output.append('@enduml\n')
     return '\n'.join(output)
+
+
+def generate(diagram_name, output_dir, sd_context):
+    script = _generate_script(sd_context)
+    output_path = os.path.join(output_dir, diagram_name + '.puml')
+    with open(output_path, 'wt') as f:
+        f.write(script)
+    return [output_path]

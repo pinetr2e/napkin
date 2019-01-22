@@ -1,31 +1,37 @@
-from napkin import plantuml
+import pytest
+from napkin import gen_plantuml
 from napkin import sd
 
 
-class TestBase(object):
-    def check(self, sd_func, exp_lines):
+@pytest.fixture(scope="session")
+def check(tmpdir_factory):
+    def fn(sd_func, exp_lines):
+        output_dir = tmpdir_factory.mktemp('data')
         exp_lines = '@startuml' + exp_lines + '@enduml\n'
         sd_context = sd.parse(sd_func)
-        lines = plantuml.generate(sd_context)
+        puml_file = gen_plantuml.generate(output_dir, 'test', sd_context)[0]
+        with open(puml_file, 'rt') as f:
+            lines = f.read()
         assert lines == exp_lines
+    return fn
 
 
-class TestSimpleCalls(TestBase):
-    def test_call(self):
+class TestSimpleCalls:
+    def test_call(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
             with foo:
                 bar.func()
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 
 foo -> bar : func()
 """)
 
-    def test_call_with_params(self):
+    def test_call_with_params(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
@@ -33,7 +39,7 @@ foo -> bar : func()
                 bar.func('abc')
                 bar.func2(key='value')
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 
@@ -41,14 +47,14 @@ foo -> bar : func(abc)
 foo -> bar : func2(key=value)
 """)
 
-    def test_call_with_return(self):
+    def test_call_with_return(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
             with foo:
                 bar.func().ret()
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 
@@ -58,7 +64,7 @@ foo <-- bar
 deactivate bar
 """)
 
-    def test_call_twice(self):
+    def test_call_twice(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
@@ -67,7 +73,7 @@ deactivate bar
                 bar.func()
                 baz.func()
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 participant baz
@@ -76,7 +82,7 @@ foo -> bar : func()
 foo -> baz : func()
 """)
 
-    def test_call_two_level(self):
+    def test_call_two_level(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
@@ -85,7 +91,7 @@ foo -> baz : func()
                 with bar.func():
                     baz.func()
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 participant baz
@@ -96,7 +102,7 @@ bar -> baz : func()
 deactivate bar
 """)
 
-    def test_opt(self):
+    def test_opt(self, check):
         def f(c):
             foo = c.object('foo')
             baz = c.object('baz')
@@ -104,7 +110,7 @@ deactivate bar
                 with c.opt():
                     baz.func()
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant baz
 
@@ -113,7 +119,7 @@ foo -> baz : func()
 end
 """)
 
-    def test_opt_with_condition(self):
+    def test_opt_with_condition(self, check):
         def f(c):
             foo = c.object('foo')
             baz = c.object('baz')
@@ -121,7 +127,7 @@ end
                 with c.opt('is_ok'):
                     baz.func()
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant baz
 
@@ -130,7 +136,7 @@ foo -> baz : func()
 end
 """)
 
-    def test_alt(self):
+    def test_alt(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
@@ -142,7 +148,7 @@ end
                     with c.choice('b'):
                         bar.func()
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 participant baz
@@ -155,15 +161,15 @@ end
 """)
 
 
-class TestObjectWithClassAndStereotype(TestBase):
-    def test_call(self):
+class TestObjectWithClassAndStereotype:
+    def test_call(self, check):
         def f(c):
             a = c.object('a', cls='Foo')
             b = c.object('b', cls='Foo', stereotype='foo')
             with a:
                 b.func()
 
-        self.check(f, """
+        check(f, """
 participant "a:Foo" as a
 participant "b:Foo" as b <<foo>>
 
@@ -171,15 +177,15 @@ a -> b : func()
 """)
 
 
-class TestCreate(TestBase):
-    def test_simple_call(self):
+class TestCreate:
+    def test_simple_call(self, check):
         def f(c):
             foo = c.object('foo')
             with foo:
                 bar = c.object('bar')
                 c.create(bar)
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 
@@ -187,7 +193,7 @@ create bar
 foo -> bar : <<create>>
 """)
 
-    def test_call_in_constructor(self):
+    def test_call_in_constructor(self, check):
         def f(c):
             foo = c.object('foo')
             baz = c.object('baz')
@@ -196,7 +202,7 @@ foo -> bar : <<create>>
                 with c.create(bar):
                     baz.func()
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant baz
 participant bar
@@ -209,8 +215,8 @@ deactivate bar
 """)
 
 
-class TestDestroy(TestBase):
-    def test_simple_destroy(self):
+class TestDestroy:
+    def test_simple_destroy(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
@@ -218,7 +224,7 @@ class TestDestroy(TestBase):
                 bar.func()
                 c.destroy(bar)
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 
@@ -227,7 +233,7 @@ foo -> bar : <<destroy>>
 destroy bar
 """)
 
-    def test_call_in_destructor(self):
+    def test_call_in_destructor(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
@@ -236,7 +242,7 @@ destroy bar
                 with c.destroy(bar):
                     foo.end()
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 
@@ -249,8 +255,8 @@ destroy bar
 """)
 
 
-class TestNote(TestBase):
-    def test_over_object(self):
+class TestNote:
+    def test_over_object(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
@@ -258,7 +264,7 @@ class TestNote(TestBase):
                 c.note('blah')
                 bar.func()
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 
@@ -266,7 +272,7 @@ note over foo : blah
 foo -> bar : func()
 """)
 
-    def test_multiple_line_text(self):
+    def test_multiple_line_text(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
@@ -274,7 +280,7 @@ foo -> bar : func()
                 c.note('blah\nblah')
                 bar.func()
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 
@@ -286,8 +292,8 @@ foo -> bar : func()
 """)
 
 
-class TestDelay(TestBase):
-    def test_without_text(self):
+class TestDelay:
+    def test_without_text(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
@@ -295,7 +301,7 @@ class TestDelay(TestBase):
                 bar.func()
             c.delay()
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 
@@ -303,7 +309,7 @@ foo -> bar : func()
 ...
 """)
 
-    def test_with_text(self):
+    def test_with_text(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
@@ -311,7 +317,7 @@ foo -> bar : func()
                 bar.func()
             c.delay('hello')
 
-        self.check(f, """
+        check(f, """
 participant foo
 participant bar
 

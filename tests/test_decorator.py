@@ -15,4 +15,4 @@ class TestDecorator(object):
         napkin.generate()
 
         # Check diagram generate with fname
-        assert os.stat(fname + '.uml')
+        assert os.stat(fname + '.puml')
