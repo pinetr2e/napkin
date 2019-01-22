@@ -2,7 +2,7 @@ import os
 import importlib
 from . import sd
 
-__version__ = '0.5.2'
+__version__ = '0.5.3'
 
 # Name and description.
 # Note that the name should match to the module name, gen_<name>.
