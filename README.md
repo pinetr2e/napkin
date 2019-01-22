@@ -106,4 +106,4 @@ $ napkin hello.py
 ```
 
 ## More examples
-[See example](./demo/readme_examples.py)
+[See more examples](./EXAMPLES.md)
