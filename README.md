@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/pinetr2e/napkin.svg?branch=master)](https://travis-ci.org/pinetr2e/napkin)
-# Napkin 
+[![PyPI version](https://badge.fury.io/py/napkin.svg)](https://badge.fury.io/py/napkin)
+# Napkin
 
 Napkin is a tool to "write" sequence diagrams effectively as Python code.
 
@@ -83,7 +84,7 @@ syntax language:
 
 Install and update using `pip`
 ```
-pip install -U napkin
+pip install napkin
 ```
 
 ## Hello world
@@ -100,10 +101,64 @@ def hello_world(c):
     with user:
         world.hello()
 ```
-Then, the following command will generate `hello_world.uml`:
+Then, the following command will generate `hello_world.puml`:
 ```
 $ napkin hello.py
 ```
 
-## More examples
-[See more examples](./EXAMPLES.md)
+## Usages
+
+### Command line
+```
+usage: napkin [-h] [--output-format {plantuml,plantuml_png}]
+              [--output-dir OUTPUT_DIR] [--version]
+              srcs [srcs ...]
+
+positional arguments:
+  srcs                  Python file or directory containing diagram functions
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --output-format {plantuml,plantuml_png}, -f {plantuml,plantuml_png}
+  --output-dir OUTPUT_DIR, -o OUTPUT_DIR
+  --version             show program's version number and exit
+
+Supported output formats:
+  plantuml         : PlantUML script (default)
+  plantuml_png     : PlantUML script and PNG image
+```
+
+### Standalone code to generate diagrams
+
+Instead of passing `napkin` binary Python files, we can generate diagrams simply by running
+the Python source code containing the diagrams as follows:
+```python
+
+import napkin
+
+@napkin.seq_diagram()
+def hello_world(c):
+    ...
+
+
+if __name__ == '__main__':
+    napkin.generate()
+```
+`napkin.generate(output_format='plantuml', output_dir='.')` will generate all the diagrams described in the same file.
+
+
+### Generate PNG files directly
+Napkin can generate PNG formt image files directly by using [plantuml Python package](https://pypi.org/project/plantuml/).
+
+After installing the optional package as follows:
+```
+$ pip install plantuml
+```
+
+`napkin` can specify the out format with `plantuml_png`, which will generate PNG file along with puml file.
+```
+$ napkin -f plantuml_png hello.py
+```
+
+## Python script examples
+[Basic Examples](./DEMO_EXAMPLES.md)

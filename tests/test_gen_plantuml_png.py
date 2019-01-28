@@ -1,5 +1,8 @@
 import os
 import napkin
+import pytest
+
+pytest.importorskip("plantuml")
 
 
 def test_png_generation(tmpdir):

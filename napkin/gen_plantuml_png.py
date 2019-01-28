@@ -2,11 +2,16 @@
 Generate PlantUML script and PNG file
 """
 import os
-import plantuml
+try:
+    import plantuml
+except ImportError:
+    raise ImportError('plantuml package is required but not yet installed.\n'
+                      'Please install it by "pip install plantuml"')
 from . import gen_plantuml
 
 
 def generate(diagram_name, output_dir, sd_context):
+
     generated_files = gen_plantuml.generate(diagram_name,
                                             output_dir, sd_context)
     puml_path = generated_files[0]

@@ -1,15 +1,15 @@
 import os
 import importlib
+import collections
 from . import sd
 
 __version__ = '0.5.3'
 
 # Name and description.
 # Note that the name should match to the module name, gen_<name>.
-SUPPORTED_FORMATS = {
-    'plantuml': 'PlantUML script',
-    'plantuml_png': 'PlantUML script and PNG image'
-}
+SUPPORTED_FORMATS = collections.OrderedDict()
+SUPPORTED_FORMATS['plantuml'] = 'PlantUML script (default)'
+SUPPORTED_FORMATS['plantuml_png'] = 'PlantUML script and PNG image'
 DEFAULT_FORAMT = 'plantuml'
 
 _collected_seq_diagrams = []

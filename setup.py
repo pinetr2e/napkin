@@ -1,23 +1,26 @@
 import setuptools
 import re
 
-with open("README.md", "rt") as f:
+with open('README.md', 'rt') as f:
     long_description = f.read()
 
-with open("napkin/__init__.py", "rt") as f:
+with open('napkin/__init__.py', "rt") as f:
     version = re.search(r'__version__ = \'(.*?)\'', f.read()).group(1)
 
 setuptools.setup(
-    name="napkin",
+    name='napkin',
     version=version,
-    author="Hans Jang",
-    author_email="hsjang8848@gmail.com",
-    description="Python DSL for writing PlantUML sequence diagram",
+    author='Hans Jang',
+    author_email='hsjang8848@gmail.com',
+    description='Python DSL for writing PlantUML sequence diagram',
     long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/pinetr2e/napkin",
+    long_description_content_type='text/markdown',
+    url='https://github.com/pinetr2e/napkin',
     packages=setuptools.find_packages(),
-    setup_requires=["pytest-runner", 'plantuml'],
+    setup_requires=['pytest-runner'],
+    extras_require={
+        'PNG': ['plantuml'],
+    },
     tests_require=["pytest"],
     classifiers=[
         'Development Status :: 3 - Alpha',
