@@ -3,7 +3,7 @@ import importlib
 import collections
 from . import sd
 
-__version__ = '0.5.4.3'
+__version__ = '0.5.4.5'
 
 # Name and description.
 # Note that the name should match to the module name, gen_<name>.
