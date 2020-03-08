@@ -29,6 +29,14 @@ def _parse_args():
         help='Python file or directory containing diagram functions')
     parser.add_argument(
         '--version', action='version', version=__version__)
+
+    #
+    # Format specific arguments. It is not desirable to have here and it will
+    # be refactored once we have many of them.
+    #
+    parser.add_argument(
+        '--server-url', default=argparse.SUPPRESS,
+        help='(only for plantuml_png format) Default is the public server')
     return parser.parse_args()
 
 
@@ -56,4 +64,4 @@ def main():
     args = _parse_args()
     for fname in _collect_py_files(args.srcs):
         _import_script(fname)
-    generate(args.output_format, args.output_dir)
+    generate(args.output_format, args.output_dir, options=vars(args))

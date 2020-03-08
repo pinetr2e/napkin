@@ -41,7 +41,7 @@ class seq_diagram:
         _collected_seq_diagrams.append(self)
 
 
-def generate(output_format=DEFAULT_FORAMT, output_dir='.'):
+def generate(output_format=DEFAULT_FORAMT, output_dir='.', options=None):
     """
     Generate sequence diagrams from all the decorated functions.
     """
@@ -53,5 +53,6 @@ def generate(output_format=DEFAULT_FORAMT, output_dir='.'):
 
     for d in _collected_seq_diagrams:
         context = sd.parse(d.sd_func)
-        generated_files = gen_module.generate(d.name, output_dir, context)
+        generated_files = gen_module.generate(d.name, output_dir, context,
+                                              options if options else {})
         print('File generated : {}'.format(', '.join(generated_files)))
