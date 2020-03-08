@@ -261,9 +261,9 @@ class TestAlt(TestBase):
         bar = c.object('bar')
         with pytest.raises(sd.FragError):
             with c.alt():
-                    with c.opt():  # wrong frag
-                        with foo:
-                            bar.func()
+                with c.opt():  # wrong frag
+                    with foo:
+                        bar.func()
 
     def test_inside_top_level_two_sections(self):
         c = sd.Context()
