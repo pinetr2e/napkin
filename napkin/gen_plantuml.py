@@ -20,7 +20,7 @@ def _output_participants(sd_context):
                 name=o.name, cls=o.cls, stereotype=stereotype)
             if o.cls else
             'participant {name:s}{stereotype}'.format(
-                name=o.name, cls=o.cls, stereotype=stereotype))
+                name=o.name, stereotype=stereotype))
     output.append('')
     return output
 
