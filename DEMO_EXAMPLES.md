@@ -128,3 +128,37 @@ def ex_cd(c):
         c.destroy(bar)
 
 ```
+## Notes
+![UML result image](images/Notes.png)
+```python
+@napkin.seq_diagram('Notes')
+def ex_notes(c):
+    foo = c.object('Foo')
+    bar = c.object('Bar')
+
+    foo.note('Note over object')
+    with foo:
+        bar.func1()
+        c.note('Note over the current context\n'
+               'example')
+        bar.func2()
+        c.note('Note over the another context\n'
+               'example')
+
+```
+## Delay
+![UML result image](images/Delay.png)
+```python
+@napkin.seq_diagram('Delay')
+def ex_delay(c):
+    foo = c.object('Foo')
+    bar = c.object('Bar')
+
+    with foo:
+        bar.func1()
+        c.delay()
+        bar.func2()
+        c.delay('with text')
+        bar.func3()
+
+```
