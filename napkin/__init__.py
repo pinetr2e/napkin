@@ -10,6 +10,7 @@ __version__ = '0.5.4.9'
 SUPPORTED_FORMATS = collections.OrderedDict()
 SUPPORTED_FORMATS['plantuml'] = 'PlantUML script (default)'
 SUPPORTED_FORMATS['plantuml_png'] = 'PlantUML script and PNG image'
+SUPPORTED_FORMATS['plantuml_svg'] = 'PlantUML script and SVG image'
 DEFAULT_FORAMT = 'plantuml'
 
 _collected_seq_diagrams = []

@@ -11,7 +11,7 @@ design. [PlantUML](http://plantuml.com) is a great tool to draw nice sequence
 diagrams with simple human readable plain text.
 
 However, the syntax of PlantUML is hard to use when there are nested calls,
-where lifeline with multiple activation/deactivations are involved.
+where lifeline with multiple activation/deactivation are involved.
 Unfortunately, this situation is quite common in sequence diagram for S/W.
 
 For example, consider the following common sequence diagram,
@@ -44,7 +44,7 @@ deactivate OrderLine
 deactivate Order
 @enduml
 ```
-It is quite hard to follow especially as there are multiple level of nested actviation/deactivation.
+It is quite hard to follow especially as there are multiple level of nested activation/deactivation.
 
 What if we express the same thing as the following Python code ?
 ```python
@@ -147,15 +147,15 @@ if __name__ == '__main__':
 `napkin.generate(output_format='plantuml', output_dir='.')` will generate all the diagrams described in the same file.
 
 
-### Generate PNG files directly
-Napkin can generate PNG formt image files directly by using [plantuml Python package](https://pypi.org/project/plantuml/).
+### Generate PNG/SVG files directly
+Napkin can generate PNG or SVG format image files directly by using [plantuml Python package](https://pypi.org/project/plantuml/).
 
 After installing the optional package as follows:
 ```
 $ pip install plantuml
 ```
 
-`napkin` can specify the out format with `plantuml_png`, which will generate PNG file along with puml file.
+`napkin` can specify the out format with `plantuml_png` or `plantuml_svg` which will generate PNG/SVG file along with puml file.
 ```
 $ napkin -f plantuml_png hello.py
 ```

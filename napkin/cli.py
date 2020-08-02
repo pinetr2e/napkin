@@ -36,7 +36,8 @@ def _parse_args():
     #
     parser.add_argument(
         '--server-url', default=argparse.SUPPRESS,
-        help='(only for plantuml_png format) Default is the public server')
+        help='(only for plantuml_png/svg format) Default is the public server')
+
     return parser.parse_args()
 
 
