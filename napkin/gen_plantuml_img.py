@@ -14,7 +14,7 @@ DEFAULT_SERVER_URL = 'http://www.plantuml.com/plantuml'
 
 _BASE64_TO_PLANTUML = {b if six.PY2 else ord(b): b2.encode() for b, b2 in zip(
     string.ascii_uppercase + string.ascii_lowercase + string.digits + '+/=',
-    string.digits + string.ascii_uppercase + string.ascii_lowercase + '- =')}
+    string.digits + string.ascii_uppercase + string.ascii_lowercase + '-_=')}
 
 
 def _encode_text_diagram(text_diagram):
@@ -43,7 +43,6 @@ def _generate_image(text_diagram, server_url, image_type, image_path):
     diagram_url = encoded_diagram.decode('utf-8')
 
     img_url = server_url + image_type + "/" + diagram_url
-    print(img_url)
     response = requests.get(img_url)
     if response.status_code == 200:
         with open(image_path, 'wb') as f:
