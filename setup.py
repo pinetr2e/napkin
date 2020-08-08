@@ -17,6 +17,7 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url='https://github.com/pinetr2e/napkin',
     packages=setuptools.find_packages(),
+    install_requires=['requests'],
     setup_requires=['pytest-runner'],
     extras_require={
         'PNG': ['plantuml'],
