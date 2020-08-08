@@ -6,12 +6,13 @@ import string
 import base64
 import zlib
 import requests
+import six
 
 from . import gen_plantuml
 
 DEFAULT_SERVER_URL = 'http://www.plantuml.com/plantuml'
 
-_BASE64_TO_PLANTUML = {ord(b): b2.encode('ascii') for b, b2 in zip(
+_BASE64_TO_PLANTUML = {b if six.PY2 else ord(b): b2.encode() for b, b2 in zip(
     string.ascii_uppercase + string.ascii_lowercase + string.digits + '+/=',
     string.digits + string.ascii_uppercase + string.ascii_lowercase + '- =')}
 
@@ -34,7 +35,7 @@ def _encode_text_diagram(text_diagram):
     # does not expect them.
     compressed = compressed[2:-4]
     b64_encoded = base64.b64encode(compressed)
-    return b''.join(_BASE64_TO_PLANTUML[ord(b)] for b in b64_encoded)
+    return b''.join(_BASE64_TO_PLANTUML[b] for b in b64_encoded)
 
 
 def _generate_image(text_diagram, server_url, image_type, image_path):
