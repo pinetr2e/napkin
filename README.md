@@ -147,18 +147,17 @@ if __name__ == '__main__':
 `napkin.generate(output_format='plantuml', output_dir='.')` will generate all the diagrams described in the same file.
 
 
-### Generate PNG/SVG files directly
-Napkin can generate PNG or SVG format image files directly by using [plantuml Python package](https://pypi.org/project/plantuml/).
+### Generate image files using PlantUML server
 
-After installing the optional package as follows:
-```
-$ pip install plantuml
-```
+Napkin can generate PNG/SVG image or ASCII art text files by asking PlantUML
+server.
 
-`napkin` can specify the out format with `plantuml_png` or `plantuml_svg` which will generate PNG/SVG file along with puml file.
+In order to generate image file, image format needs to be specified as `plantuml_<png|svg|txt>`, which will generate image file along with puml file.
 ```
 $ napkin -f plantuml_png hello.py
 ```
+
+As default, the public server is used and it can be changed by `--server-url`.
 
 ## Python script examples
 [Basic Examples](./DEMO_EXAMPLES.md)
