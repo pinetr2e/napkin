@@ -83,8 +83,8 @@ syntax language:
 ## Installation
 
 Install and update using `pip`
-```
-pip install napkin
+```shell
+$ pip install napkin
 ```
 
 ## Hello world
@@ -102,7 +102,7 @@ def hello_world(c):
         world.hello()
 ```
 Then, the following command will generate `hello_world.puml`:
-```
+```shell
 $ napkin hello.py
 ```
 
@@ -158,11 +158,22 @@ Napkin can generate PNG/SVG image or ASCII art text files by asking PlantUML
 server.
 
 In order to generate image file, image format needs to be specified as `plantuml_<png|svg|txt>`, which will generate image file along with puml file.
-```
+```shell
 $ napkin -f plantuml_png hello.py
 ```
 
 As default, the public server is used and it can be changed by `--server-url`.
+
+
+#### Helper tool to convert PlantUML text files to image files
+As Napkin has a functionality to generate image files from PlantUML text file, a
+simple script, `napkin_plantuml` is provided to use PlantUML server to generate
+images.
+
+For example, in order to generate `hello.png` image from `hello.puml` file:
+```shell
+$ napkin_plantuml hello.puml hello.png
+```
 
 ## Python script examples
 [Basic Examples](./DEMO_EXAMPLES.md)
