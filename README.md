@@ -164,8 +164,13 @@ $ napkin -f plantuml_png hello.py
 
 As default, the public server is used and it can be changed by `--server-url`.
 
+## Python script examples
+[Examples](./DEMO_EXAMPLES.md)
 
-#### Helper tool to convert PlantUML text files to image files
+
+## Misc
+
+### Helper tool to convert PlantUML text files to image files
 As Napkin has a functionality to generate image files from PlantUML text file, a
 simple script, `napkin_plantuml` is provided to use PlantUML server to generate
 images.
@@ -174,6 +179,7 @@ For example, in order to generate `hello.png` image from `hello.puml` file:
 ```shell
 $ napkin_plantuml hello.puml hello.png
 ```
+### Emacs org babel support
 
-## Python script examples
-[Basic Examples](./DEMO_EXAMPLES.md)
+In order to use `napkin` as literate programming tool [ob-napkin
+package](https://github.com/pinetr2e/ob-napkin) is supported for Emacs.
