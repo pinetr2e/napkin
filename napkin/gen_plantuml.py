@@ -24,6 +24,22 @@ def _output_participants(sd_context):
     output.append('')
     return output
 
+def _is_caller_left_side(caller, callee):
+    # The first object is on the most left side. Note that for self-call, caller
+    # is considered to be left side.
+    return caller.instance_id <= callee.instance_id
+
+
+def _generate_note(output, direction, obj, text):
+    lines = text.splitlines()
+    header = 'note ' + ('over {}'.format(obj) if obj else direction)
+    if len(lines) > 1:
+        output.append(header)
+        output += lines
+        output.append('end note')
+    else:
+        output.append('{} : {}'.format(header, text))
+
 
 def _generate_script(sd_context):
     """
@@ -48,6 +64,16 @@ def _generate_script(sd_context):
             else:
                 output.append('%(caller)s -> %(callee)s : '
                               '%(method_name)s(%(params)s)' % action.__dict__)
+            if action.notes != [None, None]:
+                caller_side, callee_side = (
+                    ('left', 'right')
+                    if _is_caller_left_side(action.caller, action.callee) else
+                    ('right', 'left'))
+                note_callee, note_caller = action.notes
+                if note_callee:
+                    _generate_note(output, callee_side, obj=None, text=note_callee)
+                if note_caller:
+                    _generate_note(output, caller_side, obj=None, text=note_caller)
 
             if not isinstance(n_action, sd_action.ImplicitReturn):
                 output.append('activate %s' % action.callee)
@@ -96,13 +122,7 @@ def _generate_script(sd_context):
                 output.append('end')
 
         elif isinstance(action, sd_action.Note):
-            lines = action.text.splitlines()
-            if len(lines) == 1:
-                output.append('note over %(obj)s : %(text)s' % action.__dict__)
-            else:
-                output.append('note over %(obj)s' % action.__dict__)
-                output += lines
-                output.append('end note')
+            _generate_note(output, None, action.obj, action.text)
 
         elif isinstance(action, sd_action.Delay):
             if action.text:
@@ -114,7 +134,7 @@ def _generate_script(sd_context):
     return '\n'.join(output)
 
 
-def generate(diagram_name, output_dir, sd_context, options=None):
+def generate(diagram_name, output_dir, sd_context, _=None):
     script = _generate_script(sd_context)
     output_path = os.path.join(output_dir, diagram_name + '.puml')
     with open(output_path, 'wt') as f:

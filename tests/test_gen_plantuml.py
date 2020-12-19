@@ -290,6 +290,22 @@ end note
 foo -> bar : func()
 """)
 
+    def test_callee_caller(self, check):
+        def f(c):
+            foo = c.object('foo')
+            bar = c.object('bar')
+            with foo:
+                bar.func().note(callee='callee side', caller='caller side')
+
+        check(f, """
+participant foo
+participant bar
+
+foo -> bar : func()
+note right : callee side
+note left : caller side
+""")
+
 
 class TestDelay:
     def test_without_text(self, check):

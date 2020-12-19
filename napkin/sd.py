@@ -66,6 +66,7 @@ class MethodCall:
         self.ret_params = None
         self.args = args
         self.kargs = kargs
+        self.notes = [None, None]
 
     def __enter__(self):
         self.obj.enter_call(self)
@@ -82,6 +83,14 @@ class MethodCall:
         foo.func().return('value')
         """
         self.specify_return_params(Params(args, kargs))
+
+    def note(self, callee=None, caller=None):
+        """
+        Specify note for caller/callee side.
+        """
+        assert callee or caller, 'At least one argument necessary'
+        self.notes[:] = (callee, caller)
+        return self
 
     def specify_return_params(self, params):
         if self.ret_params:
@@ -105,7 +114,7 @@ class Method:
 
 
 class Object(object):
-    def __init__(self, sd, name, cls=None, stereotype=None):
+    def __init__(self, sd, name, cls=None, stereotype=None, instance_id=None):
         self.sd = sd
         self.name = name
         self.cls = cls
@@ -116,6 +125,7 @@ class Object(object):
         self.valid = True
         # Becomes true if it is created in the middle of sequence diagram
         self.created = False
+        self.instance_id = instance_id
 
     def __getattr__(self, name):
         return self.create_method(name)
@@ -200,12 +210,15 @@ class Context(object):
         #     return' for (2)
         #
         self._pending_call = None
+        self._num_objects = 0
 
     def object(self, name, cls=None, stereotype=None):
         """Create an object
         """
         obj = self._objects.setdefault(name, Object(self, name, cls=cls,
-                                                    stereotype=stereotype))
+                                                    stereotype=stereotype,
+                                                    instance_id=self._num_objects))
+        self._num_objects += 1
         return obj
 
     def enter_top_object(self, obj):
@@ -248,7 +261,8 @@ class Context(object):
                                          pending_call.obj,
                                          pending_call.method.name,
                                          pending_call.params,
-                                         pending_call.method.flags)
+                                         pending_call.method.flags,
+                                         pending_call.notes)
             self._sequence.append(call_action)
 
             ret_params = self._pending_call.ret_params
@@ -270,7 +284,9 @@ class Context(object):
         caller = self._current_call.obj
         action = sd_action.Call(caller, call.obj,
                                 call.method.name, call.params,
-                                call.method.flags)
+                                call.method.flags, call.notes)
+
+
         self._sequence.append(action)
 
         self._call_stack.append(self._current_call)

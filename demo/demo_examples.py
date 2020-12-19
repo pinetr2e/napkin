@@ -110,15 +110,28 @@ def ex_cd(c):
 def ex_notes(c):
     foo = c.object('Foo')
     bar = c.object('Bar')
+    baz = c.object('Baz')
 
     foo.note('Note over object')
+    bar.note('Note over object')
+
     with foo:
-        bar.func1()
-        c.note('Note over the current context\n'
-               'example')
-        bar.func2()
-        c.note('Note over the another context\n'
-               'example')
+        c.note('Note over the current context')
+        with bar.very_long_name_function():
+            c.note('Note over the current context with\n'
+                   'multiple lines')
+            baz.another_very_long_name_function()
+
+    # Note per call
+    with foo:
+        bar.func1().note('callee side notes')
+        bar.func2().note(caller='caller side notes')
+        bar.func3().note(callee='callee side notes',
+                         caller=('caller side notes over\n'
+                                 'multiple lines'))
+        # For self call
+        foo.func4().note(callee='callee side of self-call',
+                         caller='caller side of self-call')
 
 
 @napkin.seq_diagram('Delay')
