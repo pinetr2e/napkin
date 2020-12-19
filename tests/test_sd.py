@@ -417,3 +417,27 @@ class TestNote(TestBase):
             sd_action.Call(foo, bar, 'func', sd.Params()),
             sd_action.ImplicitReturn(),
         ])
+
+    def test_call_specific(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+        baz = c.object('baz')
+        with foo:
+            bar.func().note('callee side note')
+            baz.func().note(caller='caller side note',
+                            callee='callee side note')
+            baz.func2().note('note').ret('val')
+
+        self.check(c, [
+            sd_action.Call(foo, bar, 'func', sd.Params(),
+                           notes=['callee side note', None]),
+            sd_action.ImplicitReturn(),
+            sd_action.Call(foo, baz, 'func', sd.Params(),
+                           notes=['callee side note', 'caller side note']),
+            sd_action.ImplicitReturn(),
+            sd_action.Call(foo, baz, 'func2', sd.Params(),
+                           notes=['note', None]),
+            sd_action.Return(sd.Params(('val',))),
+        ])

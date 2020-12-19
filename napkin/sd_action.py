@@ -9,26 +9,30 @@ class _Action(object):
 
 
 class Call(_Action):
-    def __init__(self, caller, callee, method_name, params, flags=''):
+    def __init__(self, caller, callee, method_name, params, flags='', notes=None):
         self.caller = caller
         self.callee = callee
         self.method_name = method_name
         self.params = params
         self.flags = flags
+        self.notes = notes if notes else [None, None]
 
     def __repr__(self):
-        return 'call from %s to %s::%s(%s) [%s]' % (self.caller,
-                                                    self.callee,
-                                                    self.method_name,
-                                                    self.params,
-                                                    self.flags)
+        return 'call from %s to %s::%s(%s) [%s%s]' % (
+            self.caller,
+            self.callee,
+            self.method_name,
+            self.params,
+            self.flags,
+            self.notes)
 
     def __eq__(self, other):
         return (self.caller is other.caller and
                 self.caller is other.caller and
                 self.method_name == other.method_name and
                 self.params == other.params and
-                self.flags == other.flags)
+                self.flags == other.flags,
+                self.notes == other.notes)
 
 
 class Return(_Action):
