@@ -24,9 +24,10 @@ def _output_participants(sd_context):
     output.append('')
     return output
 
+
 def _is_caller_left_side(caller, callee):
-    # The first object is on the most left side. Note that for self-call, caller
-    # is considered to be left side.
+    # The first object is on the most left side. Note that for self-call,
+    # caller is considered to be left side.
     return caller.instance_id <= callee.instance_id
 
 
@@ -71,9 +72,11 @@ def _generate_script(sd_context):
                     ('right', 'left'))
                 note_callee, note_caller = action.notes
                 if note_callee:
-                    _generate_note(output, callee_side, obj=None, text=note_callee)
+                    _generate_note(output, callee_side, obj=None,
+                                   text=note_callee)
                 if note_caller:
-                    _generate_note(output, caller_side, obj=None, text=note_caller)
+                    _generate_note(output, caller_side, obj=None,
+                                   text=note_caller)
 
             if not isinstance(n_action, sd_action.ImplicitReturn):
                 output.append('activate %s' % action.callee)

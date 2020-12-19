@@ -215,9 +215,10 @@ class Context(object):
     def object(self, name, cls=None, stereotype=None):
         """Create an object
         """
-        obj = self._objects.setdefault(name, Object(self, name, cls=cls,
-                                                    stereotype=stereotype,
-                                                    instance_id=self._num_objects))
+        obj = self._objects.setdefault(name,
+                                       Object(self, name, cls=cls,
+                                              stereotype=stereotype,
+                                              instance_id=self._num_objects))
         self._num_objects += 1
         return obj
 
@@ -285,7 +286,6 @@ class Context(object):
         action = sd_action.Call(caller, call.obj,
                                 call.method.name, call.params,
                                 call.method.flags, call.notes)
-
 
         self._sequence.append(action)
 

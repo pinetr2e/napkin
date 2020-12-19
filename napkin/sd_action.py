@@ -9,7 +9,8 @@ class _Action(object):
 
 
 class Call(_Action):
-    def __init__(self, caller, callee, method_name, params, flags='', notes=None):
+    def __init__(self, caller, callee, method_name, params,
+                 flags='', notes=None):
         self.caller = caller
         self.callee = callee
         self.method_name = method_name
