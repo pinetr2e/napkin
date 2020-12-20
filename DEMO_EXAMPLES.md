@@ -97,6 +97,34 @@ def ex_loop(c):
                 foo.func_other()
 
 ```
+## Opt
+![UML result image](images/Opt.png)
+```python
+@napkin.seq_diagram('Opt')
+def ex_opt(c):
+    foo = c.object('Foo')
+    bar = c.object('Bar')
+    with c.opt():
+        with foo:
+            bar.func()
+            with c.opt('some condition'):
+                bar.func_other()
+
+```
+## Message grouping
+![UML result image](images/Message%20grouping.png)
+```python
+@napkin.seq_diagram('Message grouping')
+def ex_group(c):
+    foo = c.object('Foo')
+    bar = c.object('Bar')
+    with foo:
+        with c.group():
+            bar.func()
+        with c.group('own label'):
+            bar.func()
+
+```
 ## Alt
 ![UML result image](images/Alt.png)
 ```python

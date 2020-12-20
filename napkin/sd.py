@@ -345,6 +345,9 @@ class Context(object):
     def choice(self, condition=None):
         return Frag(self, 'choice', condition)
 
+    def group(self, label=None):
+        return Frag(self, 'group', label)
+
     def enter_frag(self, frag):
         if self._current_call and self._current_call.ret_params:
             raise FragError('Current function already returned')

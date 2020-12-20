@@ -292,3 +292,22 @@ class TestAlt(TestBase):
             sd_action.FragEnd('choice'),
             sd_action.FragEnd('alt'),
         ])
+
+
+class TestGroup(TestBase):
+    def test_top_level(self):
+        c = sd.Context()
+
+        foo = c.object('foo')
+        bar = c.object('bar')
+
+        with c.group():
+            with foo:
+                bar.func()
+
+        self.check(c, [
+            sd_action.FragBegin('group'),
+            sd_action.Call(foo, bar, 'func', sd.Params()),
+            sd_action.ImplicitReturn(),
+            sd_action.FragEnd('group'),
+        ])
