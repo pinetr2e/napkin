@@ -339,3 +339,37 @@ participant bar
 foo -> bar : func()
 ... hello ...
 """)
+
+    def test_group(self, check):
+        def f(c):
+            foo = c.object('foo')
+            baz = c.object('baz')
+            with foo:
+                with c.group():
+                    baz.func()
+
+        check(f, """
+participant foo
+participant baz
+
+group
+foo -> baz : func()
+end
+""")
+
+    def test_group_with_label(self, check):
+        def f(c):
+            foo = c.object('foo')
+            baz = c.object('baz')
+            with foo:
+                with c.group('label'):
+                    baz.func()
+
+        check(f, """
+participant foo
+participant baz
+
+group label
+foo -> baz : func()
+end
+""")
