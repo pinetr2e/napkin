@@ -1,0 +1,11 @@
+@startuml
+participant Foo
+participant Bar
+
+group
+Foo -> Bar : func()
+end
+group own label
+Foo -> Bar : func()
+end
+@enduml
