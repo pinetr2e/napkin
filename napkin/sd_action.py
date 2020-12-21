@@ -104,7 +104,19 @@ class Delay(_Action):
         self.text = text
 
     def __repr__(self):
-        return 'delay' + ('({})'.foramt(self.text) if self.text else '')
+        return 'delay' + ('({})'.format(self.text) if self.text else '')
+
+    def __eq__(self, other):
+        return (self.__class__ is other.__class__ and
+                self.text == other.text)
+
+
+class Devide(_Action):
+    def __init__(self, text):
+        self.text = text
+
+    def __repr__(self):
+        return 'devide' + ('({})'.format(self.text) if self.text else '')
 
     def __eq__(self, other):
         return (self.__class__ is other.__class__ and

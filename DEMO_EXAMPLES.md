@@ -203,3 +203,19 @@ def ex_delay(c):
         bar.func3()
 
 ```
+## Devider
+![UML result image](images/Devider.png)
+```python
+@napkin.seq_diagram('Devider')
+def ex_devider(c):
+    foo = c.object('Foo')
+    bar = c.object('Bar')
+
+    with foo:
+        bar.func1()
+        c.devide()
+        bar.func2()
+        c.devide('with text')
+        bar.func3()
+
+```

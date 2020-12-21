@@ -340,6 +340,44 @@ foo -> bar : func()
 ... hello ...
 """)
 
+
+class TestDevide:
+    def test_without_text(self, check):
+        def f(c):
+            foo = c.object('foo')
+            bar = c.object('bar')
+            with foo:
+                bar.func()
+                c.devide()
+                bar.func2()
+
+        check(f, """
+participant foo
+participant bar
+
+foo -> bar : func()
+====
+foo -> bar : func2()
+""")
+
+    def test_with_text(self, check):
+        def f(c):
+            foo = c.object('foo')
+            bar = c.object('bar')
+            with foo:
+                bar.func()
+                c.devide('hello')
+                bar.func2()
+
+        check(f, """
+participant foo
+participant bar
+
+foo -> bar : func()
+== hello ==
+foo -> bar : func2()
+""")
+
     def test_group(self, check):
         def f(c):
             foo = c.object('foo')

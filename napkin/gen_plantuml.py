@@ -133,6 +133,12 @@ def _generate_script(sd_context):
             else:
                 output.append('...')
 
+        elif isinstance(action, sd_action.Devide):
+            if action.text:
+                output.append('== {} =='.format(action.text))
+            else:
+                output.append('====')
+
     output.append('@enduml\n')
     return '\n'.join(output)
 

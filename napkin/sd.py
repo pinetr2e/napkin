@@ -445,6 +445,10 @@ class Context(object):
         self.return_any_pending_call()
         self._sequence.append(sd_action.Delay(text))
 
+    def devide(self, text=None):
+        self.return_any_pending_call()
+        self._sequence.append(sd_action.Devide(text))
+
 
 def parse(sd_func):
     """
