@@ -169,6 +169,19 @@ def ex_delay(c):
         bar.func3()
 
 
+@napkin.seq_diagram('Devider')
+def ex_devider(c):
+    foo = c.object('Foo')
+    bar = c.object('Bar')
+
+    with foo:
+        bar.func1()
+        c.devide()
+        bar.func2()
+        c.devide('with text')
+        bar.func3()
+
+
 if __name__ == '__main__':
     import helper
     helper.generate_markdown_file('Basic Examples', __file__)
