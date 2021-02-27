@@ -133,7 +133,7 @@ def _generate_script(sd_context):
             else:
                 output.append('...')
 
-        elif isinstance(action, sd_action.Devide):
+        elif isinstance(action, sd_action.Divide):
             if action.text:
                 output.append('== {} =='.format(action.text))
             else:

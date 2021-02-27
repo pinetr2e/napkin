@@ -169,16 +169,16 @@ def ex_delay(c):
         bar.func3()
 
 
-@napkin.seq_diagram('Devider')
-def ex_devider(c):
+@napkin.seq_diagram('Divider')
+def ex_divider(c):
     foo = c.object('Foo')
     bar = c.object('Bar')
 
     with foo:
         bar.func1()
-        c.devide()
+        c.divide()
         bar.func2()
-        c.devide('with text')
+        c.divide('with text')
         bar.func3()
 
 
