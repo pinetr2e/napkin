@@ -341,14 +341,14 @@ foo -> bar : func()
 """)
 
 
-class TestDevide:
+class TestDivide:
     def test_without_text(self, check):
         def f(c):
             foo = c.object('foo')
             bar = c.object('bar')
             with foo:
                 bar.func()
-                c.devide()
+                c.divide()
                 bar.func2()
 
         check(f, """
@@ -366,7 +366,7 @@ foo -> bar : func2()
             bar = c.object('bar')
             with foo:
                 bar.func()
-                c.devide('hello')
+                c.divide('hello')
                 bar.func2()
 
         check(f, """
