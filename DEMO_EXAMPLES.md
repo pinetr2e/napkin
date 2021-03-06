@@ -219,3 +219,17 @@ def ex_divider(c):
         bar.func3()
 
 ```
+## Call from outside
+![UML result image](images/Call%20from%20outside.png)
+```python
+@napkin.seq_diagram('Call from outside')
+def ex_outside(c):
+    foo = c.object('Foo')
+
+    with c.outside():
+        foo.hello().ret('v')
+
+    with c.outside(from_right=True):
+        foo.hello().ret('v2')
+
+```

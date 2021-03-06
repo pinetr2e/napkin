@@ -441,3 +441,14 @@ class TestNote(TestBase):
                            notes=['note', None]),
             sd_action.Return(sd.Params(('val',))),
         ])
+
+
+class TestOutside(TestBase):
+    def test_fail_as_callee(self):
+        c = sd.Context()
+        foo = c.object('foo')
+        outside = c.outside()
+        with foo:
+            with pytest.raises(sd.CallError,
+                               match='Cannot be invoked to the outside'):
+                outside.func()

@@ -182,6 +182,17 @@ def ex_divider(c):
         bar.func3()
 
 
+@napkin.seq_diagram('Call from outside')
+def ex_outside(c):
+    foo = c.object('Foo')
+
+    with c.outside():
+        foo.hello().ret('v')
+
+    with c.outside(from_right=True):
+        foo.hello().ret('v2')
+
+
 if __name__ == '__main__':
     import helper
     helper.generate_markdown_file('Basic Examples', __file__)
