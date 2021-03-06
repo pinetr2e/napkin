@@ -42,6 +42,14 @@ def _generate_note(output, direction, obj, text):
         output.append('{} : {}'.format(header, text))
 
 
+def _get_object_name_for_call(obj):
+    name = obj.name
+    if name.startswith('<<outside'):
+        return ']' if ':right>>' in name else '['
+    else:
+        return name + ' '
+
+
 def _generate_script(sd_context):
     """
     Generate a string containing PlanUML script.
@@ -63,8 +71,9 @@ def _generate_script(sd_context):
                 output.append('%(caller)s -> %(callee)s : '
                               '%(method_name)s' % action.__dict__)
             else:
-                output.append('%(caller)s -> %(callee)s : '
-                              '%(method_name)s(%(params)s)' % action.__dict__)
+                output.append(_get_object_name_for_call(action.caller) +
+                              '-> %(callee)s : %(method_name)s(%(params)s)' %
+                              action.__dict__)
             if action.notes != [None, None]:
                 caller_side, callee_side = (
                     ('left', 'right')
@@ -93,7 +102,8 @@ def _generate_script(sd_context):
             current_call = call_stack.pop()
 
         elif isinstance(action, sd_action.Return):
-            s = '%s <-- %s' % (current_call.caller, current_call.callee)
+            s = _get_object_name_for_call(current_call.caller)
+            s += '<-- %s' % current_call.callee
             params = str(action.params)
             if params:
                 s += ': %s' % action.params

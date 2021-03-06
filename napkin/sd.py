@@ -113,6 +113,27 @@ class Method:
         return self.name
 
 
+class Outside(object):
+    def __init__(self, sd, from_right):
+        self.sd = sd
+        self.from_right = from_right
+        self.name = "<<outside{}>>".format(':right' if from_right else '')
+
+    def __getattr__(self, name):
+        raise CallError('Cannot be invoked to the outside')
+
+    def __enter__(self):
+        self.sd.enter_top_object(self)
+
+    def __exit__(self, *exc_args):
+        if exc_args[0]:
+            return
+        self.sd.leave_top_object()
+
+    def __repr__(self):
+        return self.name
+
+
 class Object(object):
     def __init__(self, sd, name, cls=None, stereotype=None, instance_id=None):
         self.sd = sd
@@ -448,6 +469,9 @@ class Context(object):
     def divide(self, text=None):
         self.return_any_pending_call()
         self._sequence.append(sd_action.Divide(text))
+
+    def outside(self, from_right=False):
+        return Outside(self, from_right)
 
 
 def parse(sd_func):

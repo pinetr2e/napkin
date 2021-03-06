@@ -165,8 +165,10 @@ $ napkin -f plantuml_png hello.py
 As default, the public server is used and it can be changed by `--server-url`.
 
 ## Python script examples
-[Examples](./DEMO_EXAMPLES.md)
+Most usage examples are available [here](./DEMO_EXAMPLES.md).
 
+## Changelogs
+A new feature or fix will be avaialbe [here](CHANGELOG.md).
 
 ## Misc
 
