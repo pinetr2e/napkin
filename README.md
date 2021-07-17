@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/pinetr2e/napkin/actions/workflows/cicd.yml/badge.svg)]
+![Build Status](https://github.com/pinetr2e/napkin/actions/workflows/cicd.yml/badge.svg)
 [![PyPI version](https://badge.fury.io/py/napkin.svg)](https://badge.fury.io/py/napkin)
 # Napkin
 
