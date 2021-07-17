@@ -232,6 +232,7 @@ class Context(object):
         #
         self._pending_call = None
         self._num_objects = 0
+        self._raw_headers = []
 
     def object(self, name, cls=None, stereotype=None):
         """Create an object
@@ -472,6 +473,9 @@ class Context(object):
 
     def outside(self, from_right=False):
         return Outside(self, from_right)
+
+    def raw_header(self, text):
+        self._raw_headers.append(text)
 
 
 def parse(sd_func):

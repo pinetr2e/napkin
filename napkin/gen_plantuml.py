@@ -50,7 +50,7 @@ def _get_object_name_for_call(obj):
         return name + ' '
 
 
-def _generate_script(sd_context):
+def _generate_script(sd_context, raw_header):
     """
     Generate a string containing PlanUML script.
     """
@@ -59,6 +59,11 @@ def _generate_script(sd_context):
 
     output = []
     output.append('@startuml')
+
+    if raw_header:
+        output.append(raw_header)
+    output += sd_context._raw_headers
+
     output += _output_participants(sd_context)
 
     for p_action, action, n_action in util.neighbour(sd_context._sequence):
@@ -153,8 +158,10 @@ def _generate_script(sd_context):
     return '\n'.join(output)
 
 
-def generate(diagram_name, output_dir, sd_context, _=None):
-    script = _generate_script(sd_context)
+def generate(diagram_name, output_dir, sd_context, options=None):
+    header_file = options and options.get('raw_header_file')
+    header = open(header_file).read() if header_file else ''
+    script = _generate_script(sd_context, header)
     output_path = os.path.join(output_dir, diagram_name + '.puml')
     with open(output_path, 'wt') as f:
         f.write(script)

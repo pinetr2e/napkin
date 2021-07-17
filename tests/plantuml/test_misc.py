@@ -104,3 +104,23 @@ group label
 foo -> baz : func()
 end
 """)
+
+
+class TestRawHeader:
+    def test(self, check_puml):
+        def f(c):
+            c.raw_header('skinparam handwritten true')
+            c.raw_header('skinparam monochrome true')
+            foo = c.object('foo')
+            bar = c.object('bar')
+            with foo:
+                bar.func()
+
+        check_puml(f, """
+skinparam handwritten true
+skinparam monochrome true
+participant foo
+participant bar
+
+foo -> bar : func()
+""")

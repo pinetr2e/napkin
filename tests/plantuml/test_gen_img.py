@@ -42,3 +42,25 @@ def test_svg_generation(tmpdir):
     napkin.generate(output_format='plantuml_svg')
     assert os.stat(fname + '.puml')
     assert os.stat(fname + '.svg')
+
+
+def test_raw_header_file(tmpdir):
+    sd_fname = os.path.join(str(tmpdir), 'sd')
+    header_fname = os.path.join(str(tmpdir), 'header.txt')
+    header_contents = 'skinparam monochrome true'
+
+    with open(header_fname, 'w') as f:
+        f.write(header_contents)
+
+    @napkin.seq_diagram(sd_fname)
+    def f(c):
+        foo = c.object('foo')
+        bar = c.object('bar')
+        with foo:
+            bar.func()
+
+    napkin.generate(output_format='plantuml',
+                    options={'raw_header_file': header_fname})
+    with open(sd_fname + '.puml') as f:
+        contents = f.read()
+    assert('@startuml\n' + header_contents in contents)

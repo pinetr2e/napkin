@@ -23,7 +23,7 @@ def _parse_args():
         '--output-format', '-f',
         default=DEFAULT_FORAMT, choices=SUPPORTED_FORMATS.keys()),
     parser.add_argument(
-        '--output-dir', '-o', default='.')
+        '--output-dir', '-o', default='.', metavar='DIR')
     parser.add_argument(
         'srcs', nargs='+',
         help='Python file or directory containing diagram functions')
@@ -35,8 +35,14 @@ def _parse_args():
     # be refactored once we have many of them.
     #
     parser.add_argument(
-        '--server-url', default=argparse.SUPPRESS,
-        help='(only for plantuml_png/svg format) Default is the public server')
+        '--raw-header-file', '-H', default=argparse.SUPPRESS, metavar='FILE',
+        help=('file to copy its contents right after @startuml. '
+              'It is mainly for changing styles.'))
+
+    parser.add_argument(
+        '--server-url', default=argparse.SUPPRESS, metavar='URL',
+        help=('(only for plantuml_png/svg/txt format) '
+              'Default is the public server'))
 
     return parser.parse_args()
 

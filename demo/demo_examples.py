@@ -193,6 +193,17 @@ def ex_outside(c):
         foo.hello().ret('v2')
 
 
+@napkin.seq_diagram('Raw header')
+def ex_raw_header(c):
+    c.raw_header("""
+    skinparam handwritten true
+    skinparam monochrome true""")
+    foo = c.object('Foo')
+    bar = c.object('Bar')
+    with foo:
+        bar.hello()
+
+
 if __name__ == '__main__':
     import helper
     helper.generate_markdown_file('Basic Examples', __file__)

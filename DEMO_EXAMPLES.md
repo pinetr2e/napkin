@@ -233,3 +233,17 @@ def ex_outside(c):
         foo.hello().ret('v2')
 
 ```
+## Raw header
+![UML result image](images/Raw%20header.png)
+```python
+@napkin.seq_diagram('Raw header')
+def ex_raw_header(c):
+    c.raw_header("""
+    skinparam handwritten true
+    skinparam monochrome true""")
+    foo = c.object('Foo')
+    bar = c.object('Bar')
+    with foo:
+        bar.hello()
+
+```

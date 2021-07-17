@@ -110,7 +110,8 @@ $ napkin hello.py
 
 ### Command line
 ```
-usage: napkin [-h] [--output-format {plantuml,plantuml_png,plantuml_svg,plantuml_txt}] [--output-dir OUTPUT_DIR] [--version] [--server-url SERVER_URL]
+usage: napkin [-h] [--output-format {plantuml,plantuml_png,plantuml_svg,plantuml_txt}] [--output-dir DIR] [--version] [--raw-header-file FILE]
+              [--server-url URL]
               srcs [srcs ...]
 
 Generate UML sequence diagram from Python code
@@ -121,10 +122,11 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --output-format {plantuml,plantuml_png,plantuml_svg,plantuml_txt}, -f {plantuml,plantuml_png,plantuml_svg,plantuml_txt}
-  --output-dir OUTPUT_DIR, -o OUTPUT_DIR
+  --output-dir DIR, -o DIR
   --version             show program's version number and exit
-  --server-url SERVER_URL
-                        (only for plantuml_png/svg format) Default is the public server
+  --raw-header-file FILE, -H FILE
+                        file to copy its contents right after @startuml. It is mainly for changing styles
+  --server-url URL      (only for plantuml_png/svg/txt format) Default is the public server
 
 Supported output formats:
   plantuml         : PlantUML script (default)
